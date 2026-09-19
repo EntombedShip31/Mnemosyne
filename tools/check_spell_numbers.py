@@ -77,6 +77,17 @@ CONST_RE = re.compile(
 MANA_BASE_RE = re.compile(r"this\.baseManaCost\s*=\s*(?P<v>\d+)\s*;")
 MANA_PER_RE = re.compile(r"this\.manaCostPerLevel\s*=\s*(?P<v>\d+)\s*;")
 
+# 吟唱时长：直接赋值，或长吟基类的抽象方法 defaultCastTime()（帧缚就是后者）
+CAST_TIME_RE = re.compile(r"this\.castTime\s*=\s*(?P<v>\d+)\s*;")
+DEFAULT_CAST_RE = re.compile(
+    r"protected\s+int\s+defaultCastTime\s*\(\s*\)\s*\{\s*return\s+(?P<v>\d+)\s*;",
+    re.DOTALL,
+)
+CAST_TYPE_RE = re.compile(r"return\s+CastType\.(?P<t>\w+)\s*;")
+# 没覆写 getCastType() 的，长吟由基类决定：MnemosyneLongCastSpell（帧缚）与 EncodeSpell（写入三件套）
+LONG_PARENTS = {"MnemosyneLongCastSpell", "EncodeSpell"}
+EXTENDS_RE = re.compile(r"public\s+(?:final\s+)?class\s+\w+\s+extends\s+(?P<p>\w+)")
+
 # 按等级冷却的改写入口（见 RecollectionSpell.onCooldownAdded）
 PER_LEVEL_CD_HOOK = "onCooldownAdded"
 
@@ -240,6 +251,23 @@ def parse_spells(directory: Path, table_ids: set[str], rep: Report) -> dict[str,
             rep.fail(f"{f.name}：抓不到 baseManaCost / manaCostPerLevel")
             continue
 
+        # 吟唱时长：优先 `this.castTime = N`，退而求其次 `defaultCastTime() { return N; }`，
+        # 都没有就是 0（= 瞬发）。
+        ct = CAST_TIME_RE.search(src)
+        if ct:
+            cast_ticks = int(ct.group("v"))
+        else:
+            dc = DEFAULT_CAST_RE.search(src)
+            cast_ticks = int(dc.group("v")) if dc else 0
+
+        # 施法类型：显式 return CastType.X 优先；否则看父类是不是长吟基类
+        ctm = CAST_TYPE_RE.search(src)
+        if ctm:
+            is_long = ctm.group("t").upper() == "LONG"
+        else:
+            pm = EXTENDS_RE.search(src)
+            is_long = bool(pm) and pm.group("p") in LONG_PARENTS
+
         spells[sid] = {
             "file": f.name,
             "rarity": cm.group("rarity").upper(),
@@ -247,6 +275,8 @@ def parse_spells(directory: Path, table_ids: set[str], rep: Report) -> dict[str,
             "cd": cd_value,
             "mana_base": int(mb.group("v")),
             "mana_per": int(mp.group("v")),
+            "cast_ticks": cast_ticks,
+            "is_long": is_long,
             "has_cd_hook": PER_LEVEL_CD_HOOK in src,
         }
     return spells
@@ -284,6 +314,26 @@ def compare(rep: Report, table: dict[str, dict], spells: dict[str, dict]) -> Non
 
         if t["mana_per"] != c["mana_per"]:
             rep.fail(f"{label}：法力每级增量 总表 {t['mana_per']} ≠ 代码 {c['mana_per']}")
+        else:
+            rep.ok()
+
+        # 吟唱：总表 ticks ↔ 代码 castTime
+        if t["cast_ticks"] != c["cast_ticks"]:
+            rep.fail(
+                f"{label}：吟唱 总表 {t['cast_ticks']}t ≠ 代码 {c['cast_ticks']}t"
+                f"（{c['file']}）"
+            )
+        else:
+            rep.ok()
+
+        # 代码自洽：CastType == LONG ⟺ castTime > 0
+        # ISS 在 INSTANT 下会强制把 castTime 归零，写了也白写（见 CurseOfOblivionSpell 的注释）。
+        if c["is_long"] != (c["cast_ticks"] > 0):
+            rep.fail(
+                f"{label}：代码自洽性问题 —— CastType="
+                f"{'LONG' if c['is_long'] else 'INSTANT'} 但 castTime={c['cast_ticks']}；"
+                f"两者必须同真同假，否则 castTime 会被 ISS 静默归零（{c['file']}）"
+            )
         else:
             rep.ok()
 
