@@ -35,6 +35,12 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
 
+      # 纯 stdlib、几秒跑完，放在构建**之前**：资源/数值漂移不用等 6 分钟才暴露。
+      - name: Resource & number self-check
+        run: |
+          python3 tools/check_resources.py
+          python3 tools/check_spell_numbers.py
+
       - name: Build with Gradle
         # -Ppcl2_mods_dir：build.gradle 的 copyToMinecraftMods 默认把 jar 复制到
         # D:/PCL2/...（本地 PCL2 实例）。CI 上没有那个盘符，重定向到工作区内的
