@@ -1285,6 +1285,55 @@ def check_item_obtainability(rep: Report):
     rep.summary()
 
 
+# ---------------------------------------------------------------------------
+# 检查 16：法术在文档里的覆盖度
+# ---------------------------------------------------------------------------
+# ⭐ 为什么单列这一项：2026-09-19 实测 `tech/04_法术等级强度表.md` 与
+# `tech/08_音效方案.md` **只覆盖 16 个法术**，缺的正好是 JJK 增补那 5 个
+# （endless_realm / adaptation / retrograde / framebind / oblation）。
+# 于是这两篇的标题一直写着"16 个法术"，而真实数字是 21 —— 且没人发现，
+# 因为**没有任何东西会去对这份数**。
+#
+# ⚠️ 只查**本应覆盖全部法术**的篇目。分阶文档（docs/04 低阶、docs/05 中阶）
+# 按稀有度只覆盖一部分，把它们算进来会全是假 FAIL。
+#
+# ⚠️ 匹配用「id **或** 中文名」：docs/03 的表格只有中文名 + 英文名，不写 id。
+#
+# ⚠️ 缺口一律走 `pending`（已知欠账，不阻塞）而不是 `fail`：
+#    现在确实缺 5 个，判 FAIL 会让 CI 长期红着，而"红了是正常的"一旦成为共识，
+#    这个校验器就死了（本文件 Report 文档字符串的原话）。
+SPELL_DOCS = [
+    ("docs/忆海Mnemosyne_使用文档.html", "使用文档（玩家可见）"),
+    ("docs/tech/04_法术等级强度表.md", "tech/04 等级强度表"),
+    ("docs/tech/08_音效方案.md", "tech/08 音效方案"),
+    ("docs/03_法术_总表与设计准则.md", "docs/03 总表"),
+]
+
+
+def check_doc_coverage(rep: Report):
+    rep.head(f"检查 16 · 法术在文档里的覆盖度（{len(SPELL_DOCS)} 篇通用文档）")
+    ids, _ = spell_ids_from_java()
+    zh = read_json(os.path.join(ASSETS, "lang", "zh_cn.json"))
+
+    docs = []
+    for rel, label in SPELL_DOCS:
+        p = os.path.join(ROOT, rel)
+        if not os.path.isfile(p):
+            rep.fail("doc", f"文档不存在：{rel}")
+            continue
+        with open(p, encoding="utf-8") as f:
+            docs.append((label, rel, f.read()))
+
+    for sid in ids:
+        name = zh.get(f"spell.{MODID}.{sid}", "")
+        for label, rel, text in docs:
+            if sid in text or (name and name in text):
+                rep.ok(f"{sid} → {label}")
+            else:
+                rep.pending("doc", f"「{name or sid}」({sid}) 未出现在 {label} —— {rel}")
+    rep.summary()
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description="忆海跨工作流资源一致性校验")
     ap.add_argument("--verbose", action="store_true", help="打印每个被检查的对象")
@@ -1308,6 +1357,7 @@ def main() -> int:
     check_effect_icons(rep)
     check_event_subscribers(rep)
     check_item_obtainability(rep)
+    check_doc_coverage(rep)
 
     if rep.uncovered_items:
         # 必须放在汇总**之前**且独立成块：这些项没有计入 checked，
@@ -1328,14 +1378,22 @@ def main() -> int:
             p.split("data/mnemosyne/structures/")[1].split(".nbt")[0] + ".nbt"
             for p in rep.pendings if "data/mnemosyne/structures/" in p
         })
-        print(f"\npending 明细（已知欠账，不阻塞退出码）：缺 {len(missing)} 个结构模板 NBT")
+        print("\npending 明细（已知欠账，不阻塞退出码）：")
         if args.pending_detail:
             for p in rep.pendings:
                 print("  … " + p)
         else:
             for m_ in missing:
                 print(f"  … data/mnemosyne/structures/{m_}")
-            print("  （加 --pending-detail 看是哪些池引用了它们）")
+            if missing:
+                print("  （加 --pending-detail 看是哪些池引用了它们）")
+            # ⚠️ 非结构类的 pending（目前是检查 16 的文档覆盖缺口）也必须列出来 ——
+            #    否则它们只体现在 pending 的**条数**上，谁也不知道缺的是什么。
+            others = [p for p in rep.pendings if "data/mnemosyne/structures/" not in p]
+            if others:
+                print(f"  —— 文档覆盖缺口 {len(others)} 处 ——")
+                for o in sorted(others):
+                    print("  … " + o)
 
     if rep.fails:
         print("\nFAIL 明细：")
