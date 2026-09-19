@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "mnemosyne:block/mnemonic_bricks_cracked"
+  }
+}

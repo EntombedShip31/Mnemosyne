@@ -1,0 +1,1275 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>忆海 Mnemosyne · 使用文档</title>
+<style>
+:root{
+  --indigo:#534AB7; --indigo-l:#EEEDFE; --indigo-d:#26215C;
+  --magenta:#D4537E; --magenta-l:#FBEAF0; --magenta-d:#4B1528;
+  --bg:#FBFAF8; --card:#FFFFFF; --line:#E7E5DF;
+  --t1:#23221D; --t2:#6A6960; --t3:#9C9A91;
+  --ok:#3B6D11; --okbg:#EAF3DE;
+  --warn:#854F0B; --warnbg:#FAEEDA;
+  --info:#185FA5; --infobg:#E6F1FB;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth; scroll-padding-top:70px}
+body{margin:0;background:var(--bg);color:var(--t1);
+  font:15px/1.7 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+  -webkit-font-smoothing:antialiased}
+code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.88em;
+  background:#F2F1EC;border:1px solid var(--line);border-radius:4px;padding:1px 5px}
+a{color:var(--indigo)}
+
+nav{position:sticky;top:0;z-index:10;background:rgba(251,250,248,.94);
+  backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+nav .inner{max-width:1080px;margin:0 auto;padding:12px 24px;display:flex;gap:6px;
+  flex-wrap:wrap;align-items:center}
+nav .brand{font-weight:600;color:var(--indigo);margin-right:10px;white-space:nowrap}
+nav a{font-size:13px;color:var(--t2);text-decoration:none;padding:4px 9px;
+  border-radius:6px;white-space:nowrap}
+nav a:hover{background:var(--indigo-l);color:var(--indigo)}
+
+.wrap{max-width:1080px;margin:0 auto;padding:0 24px 90px}
+header.hero{padding:56px 0 40px;border-bottom:1px solid var(--line);margin-bottom:8px}
+.hero h1{font-size:34px;font-weight:600;margin:0 0 10px;letter-spacing:-.5px}
+.hero h1 .sub{color:var(--indigo)}
+.hero p{color:var(--t2);font-size:16px;margin:0 0 6px;max-width:720px}
+.hero .meta{color:var(--t3);font-size:13px;margin-top:16px}
+.pill{display:inline-block;font-size:12px;padding:2px 9px;border-radius:20px;
+  background:var(--indigo-l);color:var(--indigo);margin-right:6px;font-weight:500}
+
+h2{font-size:22px;font-weight:600;margin:52px 0 6px;padding-top:8px;scroll-margin-top:70px}
+h2 .n{color:var(--indigo);font-weight:600;margin-right:8px}
+h3{font-size:16px;font-weight:600;margin:28px 0 10px}
+.lead{color:var(--t2);margin:0 0 18px;max-width:800px}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;
+  padding:18px 20px;margin-bottom:14px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+
+.metric{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+.metric .k{font-size:12.5px;color:var(--t2);margin-bottom:4px}
+.metric .v{font-size:20px;font-weight:600}
+.metric .v small{font-size:13px;font-weight:400;color:var(--t2)}
+
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:14px}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-weight:600;font-size:13px;color:var(--t2);background:#F7F6F2}
+tr:last-child td{border-bottom:none}
+td code{white-space:nowrap}
+
+.spell{background:var(--card);border:1px solid var(--line);border-radius:12px;
+  padding:0;margin-bottom:14px;overflow:hidden}
+.spell .head{display:flex;align-items:center;gap:12px;padding:14px 18px;
+  border-bottom:1px solid var(--line);background:#FCFBF9}
+.spell .icon{width:38px;height:38px;border-radius:8px;flex:none;
+  display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:600;
+  background:var(--indigo-d);color:#E6E3FA;image-rendering:pixelated}
+.spell .name{font-weight:600;font-size:16px;line-height:1.3}
+.spell .id{font-size:12px;color:var(--t3);font-family:ui-monospace,Consolas,monospace}
+.spell .body{padding:14px 18px 16px}
+.spell .stats{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.stat{font-size:12px;padding:3px 9px;border-radius:6px;background:#F2F1EC;
+  color:var(--t2);border:1px solid var(--line);white-space:nowrap}
+.stat b{color:var(--t1);font-weight:600}
+.badge{font-size:11.5px;padding:3px 9px;border-radius:20px;font-weight:600;white-space:nowrap}
+.b-common{background:#F1EFE8;color:#5F5E5A}
+.b-uncommon{background:var(--okbg);color:var(--ok)}
+.b-rare{background:var(--infobg);color:var(--info)}
+.b-epic{background:var(--indigo-l);color:var(--indigo)}
+.b-legend{background:var(--warnbg);color:var(--warn)}
+.spell .use{font-size:14px;color:var(--t1);margin:0}
+.spell .use b{color:var(--indigo)}
+.spell .tips{margin:10px 0 0;padding:10px 12px;background:#F7F6F2;border-radius:8px;
+  font-size:13px;color:var(--t2);border-left:3px solid var(--magenta)}
+.spell .tips b{color:var(--magenta-d)}
+
+.note{border-radius:10px;padding:13px 16px;margin:16px 0;font-size:14px;line-height:1.7}
+.note.info{background:var(--infobg);border-left:3px solid var(--info)}
+.note.warn{background:var(--warnbg);border-left:3px solid var(--warn)}
+.note.ok{background:var(--okbg);border-left:3px solid var(--ok)}
+.note b{font-weight:600}
+
+.steps{counter-reset:s;list-style:none;padding:0;margin:16px 0}
+.steps li{counter-increment:s;position:relative;padding:0 0 18px 46px;border-left:2px solid var(--line);
+  margin-left:14px}
+.steps li:last-child{border-left-color:transparent;padding-bottom:0}
+.steps li::before{content:counter(s);position:absolute;left:-15px;top:0;width:28px;height:28px;
+  border-radius:50%;background:var(--indigo);color:#fff;font-size:13px;font-weight:600;
+  display:flex;align-items:center;justify-content:center}
+.steps .t{font-weight:600;margin-bottom:3px}
+.steps .d{color:var(--t2);font-size:14px}
+
+footer{margin-top:60px;padding-top:24px;border-top:1px solid var(--line);
+  color:var(--t3);font-size:13px;line-height:1.8}
+.toc{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px;margin:20px 0 0}
+.toc a{display:block;padding:10px 14px;background:var(--card);border:1px solid var(--line);
+  border-radius:9px;text-decoration:none;color:var(--t1);font-size:14px}
+.toc a:hover{border-color:var(--indigo);color:var(--indigo)}
+.toc a span{display:block;font-size:12px;color:var(--t3);margin-top:2px}
+</style>
+</head>
+<body>
+
+<nav><div class="inner">
+  <span class="brand">忆海 Mnemosyne</span>
+  <a href="#start">快速开始</a>
+  <a href="#engram">忆格</a>
+  <a href="#oblivion">遗忘</a>
+  <a href="#spells">法术</a>
+  <a href="#gear">装备物品</a>
+  <a href="#world">遗迹</a>
+  <a href="#cmd">指令</a>
+  <a href="#config">配置</a>
+  <a href="#faq">FAQ</a>
+</div></nav>
+
+<div class="wrap">
+
+<header class="hero">
+  <h1>忆海 <span class="sub">Mnemosyne</span></h1>
+  <p>记忆 · 认知学派 —— 铁魔法（Iron's Spells 'n Spellbooks）的第三方学派附属。</p>
+  <p>它不做最高伤害。它做的是：<b>读取</b>、<b>记住</b>、<b>抹去</b>。</p>
+  <div class="meta">
+    <span class="pill">MC 1.20.1</span>
+    <span class="pill">Forge 47.4.0</span>
+    <span class="pill">ISS 3.16.3</span>
+    <span class="pill">21 个法术</span>
+    <span class="pill">学派 id：mnemosyne:memory</span>
+  </div>
+</header>
+
+<div class="toc">
+  <a href="#start">快速开始<span>四步进入忆海</span></a>
+  <a href="#engram">忆格系统<span>本流派的核心资源</span></a>
+  <a href="#oblivion">遗忘系统<span>剥夺与降级</span></a>
+  <a href="#spells">21 个法术<span>逐个讲清用法</span></a>
+  <a href="#gear">装备与物品<span>含全部配方</span></a>
+  <a href="#world">忆者遗迹<span>怎么找、有什么</span></a>
+  <a href="#cmd">指令<span>含一键解锁</span></a>
+  <a href="#config">配置项<span>可调数值</span></a>
+  <a href="#faq">FAQ<span>常见疑问</span></a>
+</div>
+
+<!-- ============ 快速开始 ============ -->
+<h2 id="start"><span class="n">01</span>快速开始</h2>
+<p class="lead">忆海有一个<b>进度门槛</b>：学派设了 <code>requiresLearning = true</code>，必须先"记起"法术才能抄写它。
+记忆不是从书里学的，是从<b>忆碑</b>里读出来的。</p>
+
+<ol class="steps">
+  <li>
+    <div class="t">找到忆者遗迹</div>
+    <div class="d">用 <code>/locate structure mnemosyne:memory_ruin</code> 或自然探索。遗迹里一定有<b>忆碑</b>、忆晶簇和箱子。</div>
+  </li>
+  <li>
+    <div class="t">右键忆碑，记起一个法术</div>
+    <div class="d">每块碑给一个随机的忆海法术，读一次就"记住了"。读过的碑会变暗（靛蓝 → 品红）。<br>
+    聊天栏会提示「你记起了一个法术：XXX」。</div>
+  </li>
+  <li>
+    <div class="t">在官方抄写台抄进官方卷轴</div>
+    <div class="d">用官方 <b>抄写台（Inscription Table）</b> + <b>ISS 官方法术书</b> + 忆海卷轴。
+    忆海法术的卷轴只在忆者遗迹的箱子里定向掉落。忆海不提供自己的法书。</div>
+  </li>
+  <li>
+    <div class="t">装备法书，开打</div>
+    <div class="d">把 ISS 官方法术书装到法术书槽（Curios），按 ISS 的法术轮盘键选法术。
+    忆矢是廉价的起手式。</div>
+  </li>
+</ol>
+
+<div class="note info">
+  <b>想跳过进度门槛？</b> 用管理员指令 <code>/mnemosyne unlock</code> 一键解锁全部 21 个忆海法术（需要 OP）。
+  见 <a href="#cmd">指令章节</a>。
+</div>
+
+<!-- ============ 忆格系统 ============ -->
+<h2 id="engram"><span class="n">02</span>忆格系统</h2>
+<p class="lead">忆格（Engram）是忆海唯一的资源。它既是"弹药"，也是"负担" ——
+占用越多，法术越强，但施法越慢、越费法力。</p>
+
+<h3>2.1 基础规则</h3>
+<div class="grid3">
+  <div class="metric"><div class="k">基础忆格数</div><div class="v">3 <small>格</small></div></div>
+  <div class="metric"><div class="k">常驻上限</div><div class="v">8 <small>格</small></div></div>
+  <div class="metric"><div class="k">记忆有效期</div><div class="v">120 <small>秒</small></div></div>
+  <div class="metric"><div class="k">每格共鸣加成</div><div class="v">+20<small>%</small></div></div>
+  <div class="metric"><div class="k">每格施法速度惩罚</div><div class="v">−8<small>%</small></div></div>
+  <div class="metric"><div class="k">每格法力惩罚</div><div class="v">+10<small>%</small></div></div>
+</div>
+
+<div class="note warn">
+  <b>记忆会腐坏。</b> 普通忆格里的记忆 <b>120 秒</b>后自然消散（计时用主世界时间，登出会暂停）。
+  到期后 HUD 不会常驻提醒 —— 你会收到一次动作栏提示 <code>忆格 N / M</code> 加一个音效。
+  想主动查看，用 <code>/mnemosyne engrams</code>。
+</div>
+
+<h3>2.2 三种记忆</h3>
+<table>
+  <tr><th>类型</th><th>来源</th><th>作用</th></tr>
+  <tr>
+    <td><b>铭忆</b><br><code>type.capacity</code></td>
+    <td>「写入 · 铭忆」</td>
+    <td>写入即生效：临时提升法术上限 + 多一格临时忆格（不需要释放）。</td>
+  </tr>
+  <tr>
+    <td><b>质忆</b><br><code>type.essence</code></td>
+    <td>「写入 · 质忆」</td>
+    <td>存下生物的本质，暂时借用它的某一项特性（如火焰免疫、爬墙）。</td>
+  </tr>
+  <tr>
+    <td><b>痛忆</b><br><code>type.pain</code></td>
+    <td>「写入 · 痛忆」</td>
+    <td>把你刚承受的伤痛存下来，之后原样奉还给敌人。</td>
+  </tr>
+</table>
+
+<h3>2.3 临时忆格</h3>
+<p>部分法术会临时给你额外忆格（<b>碎忆 +1</b>、<b>忆格扩张 +2~4</b>、<b>忆海 +3</b>）。
+临时格有独立倒计时，<b>到期时如果里面有记忆，记忆一并消散</b> —— 这是刻意的风险设计，不会"贴心地"帮你保住。</p>
+
+<h3>2.4 忆者法袍的加成</h3>
+<p>穿忆者法袍 4 件套：<b>忆格上限 +2</b>（基础 3 → 5），并且<b>永久记忆不再计入共鸣惩罚</b>。</p>
+
+<h3>2.5 忆格数量显示在物品栏上方</h3>
+<p>忆格的数量与上限显示在<b>物品栏上方的一行白字</b>（动作栏），格式是 <code>忆格 已用 / 上限</code>：</p>
+<ul>
+  <li>刚进游戏 → <code>忆格 0 / 3</code></li>
+  <li>写入一段记忆 → <code>忆格 1 / 3</code></li>
+  <li>穿上忆者法袍（+1 格上限）→ <code>忆格 1 / 4</code>，上限变了也会立刻刷新</li>
+  <li>用完记忆 → <code>忆格 0 / 4</code></li>
+</ul>
+<div class="note info">
+  <b>为什么数量不占药水效果位？</b> 基础忆格槽位是忆海的核心资源，应该<b>内置显示</b>。
+  占用药水效果位的话，装几个模组就会被挤掉，而且它也不是"增益/减益"。
+  所以数量只走这行白字，<b>不占用右上角的效果图标</b>。
+</div>
+
+<h3>2.6 右上角的效果图标</h3>
+<p>只有<b>真正在改变你状态</b>的东西才会占效果位，共两个：</p>
+<table>
+  <tr><th>图标</th><th>含义</th></tr>
+  <tr><td><b>忆格负担</b>（灰紫）</td><td>层数 = 计入惩罚的忆格数。<b>它实际承载施法速度惩罚</b>；穿法袍 4 件套时永久格不计入</td></tr>
+  <tr><td><b>临时忆格</b>（品红）</td><td>层数 = 当前临时格数量，带倒计时</td></tr>
+</table>
+<p>此外，<b>法术自身</b>产生状态时也会出现对应图标：</p>
+<table>
+  <tr><th>图标</th><th>来源</th><th>含义</th></tr>
+  <tr><td>回光</td><td>走马灯</td><td>窗口内第一次致死会被拦截（窗口 6~14 秒，随等级）</td></tr>
+  <tr><td>记忆空白</td><td>走马灯触发后</td><td>法力恢复 −40%、受到的忆海法术伤害 +50%</td></tr>
+  <tr><td>遗忘 / 失忆 / 认知过载 / 迟滞</td><td>遗忘系法术</td><td>施加在目标身上的减益</td></tr>
+</table>
+<div class="note info">
+  <b>所有图标都是为忆海单独绘制的</b>（不是原版占位图），配色沿用学派主色：
+  靛蓝 <code>#534AB7</code>、品红 <code>#D4537E</code>、灰紫 <code>#5C5480</code>。
+</div>
+
+<div class="note warn">
+  <b>喝牛奶不会毁掉你的忆格。</b> 它会清掉这些效果图标，但它们只是从忆格数据算出来的缓存，
+  一秒内会自动重新出现。记忆内容本身存在存档里，不受影响。
+</div>
+
+<div class="note warn">
+  <b>效果图标不是主渠道。</b> 原版只显示有限个图标，装几个模组就会被挤掉。
+  想看清每一格里具体装了什么，用 <code>/mnemosyne engrams</code>。
+</div>
+
+<!-- ============ 遗忘系统 ============ -->
+<h2 id="oblivion"><span class="n">03</span>遗忘系统</h2>
+<p class="lead">遗忘不是"减益"。它是<b>把目标的一项能力从它身上删掉</b> ——
+怪物会真的忘记怎么攻击、怎么喝药、怎么爬墙。</p>
+
+<h3>3.1 它到底做了什么</h3>
+<p>每个生物的行为由一组"行为目标（AI goal）"驱动。遗忘会<b>临时移除其中的若干项</b>，
+到期后<b>自动恢复</b>。所以被遗忘的僵尸不会"变慢"，它会<b>站在原地不知道该干什么</b>。</p>
+
+<h3>3.2 三层强度</h3>
+<table>
+  <tr><th>层级</th><th>法术</th><th>移除项数</th><th>持续</th></tr>
+  <tr><td>Tier 1</td><td>遗忘诅咒（领域）</td><td>1 项（领域内每 40~20 tick 一次）</td><td>8~15 秒</td></tr>
+  <tr><td>Tier 2</td><td>失忆</td><td>全部特殊能力 + 眩晕</td><td>4~8 秒</td></tr>
+  <tr><td>Tier 3</td><td>集体遗忘</td><td>范围内全部目标</td><td>6~12 秒</td></tr>
+</table>
+
+<div class="note warn">
+  <b>BOSS 免疫「剥夺」。</b> 对 BOSS 施放遗忘不会生效，改为<b>数值化削弱</b>：
+  攻击力 −20%，持续 30 秒。你会看到动作栏提示「目标免疫『剥夺』」—— 那不是 bug。
+</div>
+
+<div class="note info">
+  <b>已知降级：</b> 监守者（Warden）、山羊、猪灵、猪灵蛮兵、僵尸猪灵、疣猪兽这 6 种生物
+  <b>不使用 goal 系统</b>（它们走原版的 <code>Brain</code>），所以遗忘对它们只会"移除不了任何东西"，
+  不会崩溃、也不会有效果。这是当前版本的已知限制。
+</div>
+
+<!-- ============ 法术 ============ -->
+<h2 id="spells"><span class="n">04</span>21 个法术</h2>
+<p class="lead">按稀有度分三档。法力与冷却列出的格式是 <code>基础值（每级 +N）</code>；
+<b>吟唱</b>列指施法类型：瞬发（INSTANT）还是需要长按吟唱（LONG）。</p>
+
+<div class="note ok">
+  <b>所有忆海法术都是 5 级制</b>，随等级成长。法力消耗随等级线性增加；<b>冷却默认是固定值</b>，不随等级变。
+  <br><b>唯一例外是「走马灯」</b>：它的冷却与免死窗口也按等级线性变化 —— 等级越高，窗口越长、冷却越短，
+  代价是耗蓝更高（详见下方卡片）。
+</div>
+
+<h3>低阶 · Common / Uncommon</h3>
+
+<div class="spell">
+  <div class="head">
+    <div class="icon">矢</div>
+    <div style="flex:1">
+      <div class="name">忆矢</div>
+      <div class="id">mnemosyne:memory_arrow</div>
+    </div>
+    <span class="badge b-common">Common</span>
+  </div>
+  <div class="body">
+    <div class="stats">
+      <span class="stat">法力 <b>8</b>（+1/级）</span>
+      <span class="stat">冷却 <b>2.0s</b></span>
+      <span class="stat">瞬发</span>
+      <span class="stat">伤害 <b>4~8</b>（不含加成）</span>
+    </div>
+    <p class="use">射出一枚结晶化的记忆碎片，命中造成伤害并<b>叠加 1 层「认知过载」</b>（层数上限 5，4 级起 6）。
+    认知过载每层让目标受到的记忆法术伤害提高，所以忆矢既是输出也是<b>起手铺垫</b>。</p>
+    <div class="tips"><b>用法：</b>便宜、瞬发、冷却只有 2 秒 —— 这是忆海术士每一场战斗的起手式。
+    先连射几发把认知过载叠上去，再放高伤害法术。</div>
+    <div class="tips"><b>特效：</b>离手瞬间沿视线射出一道<b>定向光带</b>（球状爆发只能说明"放了法术"，
+    光带才说得出"箭往哪飞"）；飞行中拖出<b>靛蓝 → 品红</b>的双色记忆光束，外层绕飞行轴拧出双螺旋尘环，
+    间或逸散出冷蓝魂火、绯红孢子与附魔字符。
+    命中时先是一记白光爆闪，随后炸开记忆碎片与靛蓝／品红双层尘雾，
+    并留下一圈<b>与飞行方向垂直的冲击波尘环</b>（三圈同心，环的朝向就是箭的来向）。</div>
+  </div>
+</div>
+
+<div class="spell">
+  <div class="head">
+    <div class="icon">窥</div>
+    <div style="flex:1">
+      <div class="name">窥忆</div>
+      <div class="id">mnemosyne:glimpse</div>
+    </div>
+    <span class="badge b-common">Common</span>
+  </div>
+  <div class="body">
+    <div class="stats">
+      <span class="stat">法力 <b>10</b>（+1/级）</span>
+      <span class="stat">冷却 <b>2.0s</b></span>
+      <span class="stat">瞬发</span>
+      <span class="stat">射程 <b>16 格</b></span>
+      <span class="stat">无伤害</span>
+    </div>
+    <p class="use">读取目标的记忆，输出<b>可行动的情报</b>。命中后同时做三件事：
+    <b>叠 1 层认知过载</b>、让目标<b>发光 10 秒</b>、以及在世界里
+    <b>画出它接下来 2 秒的预测走位</b>（一串光点）。</p>
+
+    <h4 style="margin:14px 0 6px">读到什么（按法术等级解锁）</h4>
+    <table>
+      <tr><th>等级</th><th>解锁内容</th></tr>
+      <tr><td><b>L1</b></td><td>生命 / 护甲 / 手持物 / 当前攻击目标 / <b>可借到的特质</b> / <b>威胁等级</b></td></tr>
+      <tr><td><b>L2</b></td><td>移动速度</td></tr>
+      <tr><td><b>L3</b></td><td>全部状态效果（<i>小字体显示</i>）</td></tr>
+      <tr><td><b>L4</b></td><td>生命百分比</td></tr>
+      <tr><td><b>L5</b></td><td><b>可被遗忘的能力清单</b> + <b>掉落预览</b></td></tr>
+    </table>
+
+    <div class="tips"><b>忆海专属情报（一般模组看不到的）</b>：
+    <b>威胁等级</b>（BOSS 会标注"免疫剥夺"）、<b>认知过载层数</b>、<b>遗忘剩余时间</b>、
+    <b>意识深度</b>（有些生物由 <code>Brain</code> 驱动，"剥夺"对它们不可达 —— 会明确标出，
+    省得你白放一个遗忘）、以及 L5 的<b>可遗忘能力清单</b>与<b>掉落预览</b>。</div>
+
+    <div class="tips"><b>状态效果那一行</b>用的是<b>小一号的斜体淡紫字</b>，
+    和正文区分开；持续时间<b>超过 20 分钟或永久</b>的会直接显示 <code>∞</code>，
+    不再是一串没信息量的秒数。</div>
+
+    <div class="tips"><b>关于预测路径</b>：它是<b>物理外推</b>（当前速度 + 重力 + 阻力），
+    不是"读取了怪物的意图"——MC 没有那样的通用接口。
+    所以目标主动转向时会有偏差，把它当<b>参考线</b>用，不要当成精确落点。
+    <br>静止的目标不会画线；光点<b>只发给你自己</b>，别人看不到。</div>
+
+    <div class="tips"><b>用法：</b>三个用途 —— ① 战斗前侦察，先看清敌人有什么能力再决定打法；
+    ② 因为无伤害但能叠层，它可以当"免费"的铺垫技（法力只要 10，冷却 2 秒）；
+    ③ <b>给目标打标记</b>（发光 10 秒），队友也能看见轮廓，多人里可以点名。</div>
+  </div>
+</div>
+
+<div class="spell">
+  <div class="head">
+    <div class="icon">碎</div>
+    <div style="flex:1">
+      <div class="name">碎忆</div>
+      <div class="id">mnemosyne:memory_shard</div>
+    </div>
+    <span class="badge b-common">Common</span>
+  </div>
+  <div class="body">
+    <div class="stats">
+      <span class="stat">法力 <b>18</b>（+3/级）</span>
+      <span class="stat">冷却 <b>4.0s</b></span>
+      <span class="stat">瞬发</span>
+      <span class="stat">锥形 <b>5 格 / 60°</b></span>
+      <span class="stat">自带 <b>+1 临时忆格</b>（15~40 秒）</span>
+    </div>
+    <p class="use">掷出一团碎裂的记忆，对<b>面前锥形范围</b>内所有目标造成伤害并击退，
+    同时给自己 +1 个临时忆格。</p>
+    <div class="tips"><b>用法：</b>被围住时的解场技 —— 锥形范围 + 击退，能一次推开好几个。
+    顺带补一格临时忆格，等于"边打边回资源"。注意临时格到期会连里面的记忆一起消失。</div>
+    <div class="tips"><b>特效：</b>离手时在身前铺出<b>等距锥壳</b> —— 每一层距离上放一圈尘环、由小到大，
+    于是「5 格 / 60°」这个判定范围变成看得见的东西（原版没有任何粒子形状能表达锥），
+    中轴线再补一串双色尘。每个被打到的目标各自在自己身上炸一次记忆碎片；
+    施法者身上则绕体升起"刻痕"光点，<b>+1 临时忆格就转一圈</b>。</div>
+  </div>
+</div>
+
+<div class="spell">
+  <div class="head">
+    <div class="icon">铭</div>
+    <div style="flex:1">
+      <div class="name">写入 · 铭忆</div>
+      <div class="id">mnemosyne:engrave</div>
+    </div>
+    <span class="badge b-common">Common</span>
+  </div>
+  <div class="body">
+    <div class="stats">
+      <span class="stat">法力 <b>30</b>（+4/级）</span>
+      <span class="stat">冷却 <b>15.0s</b></span>
+      <span class="stat">吟唱 <b>20 tick</b></span>
+      <span class="stat">持续 <b>120 秒</b>（法袍 4 件套 180 秒）</span>
+      <span class="stat">法术上限 <b>+2</b></span>
+    </div>
+    <p class="use">把「<b>容量</b>」铭刻进自己的记忆：<b>法术上限 +2</b>，
+    并且<b>多出一格临时忆格</b>。写入即生效，不需要任何后续操作。</p>
+    <p class="use" style="margin-top:8px"><b>代价与风险</b>：
+    ① 它仍然走写入类的通用门槛 —— <b>必须有空忆格</b>才能施放；
+    ② 那格临时忆格到期时，<b>如果里面装着记忆，记忆会一并消散</b>。</p>
+    <div class="tips"><b>为什么"法术上限"要临时提升</b>：ISS 的法术上限不是玩家属性，
+    而是<b>装备上那本法术书自己带的</b>。铭忆会临时把它的槽位撑大 ——
+    到期后自动还原。
+    <br>⚠️ <b>安全阀</b>：如果到期时<b>借来的槽位里还有法术</b>，效果会<b>延期 10 秒</b>并提醒你
+    清空它们 —— 强行缩容会把你书里的法术静默吃掉，宁可多挂一会儿。</div>
+    <div class="tips"><b>用法：</b>准备打一场硬仗之前先铭忆一下 —— 多两个槽位意味着能多带两招。
+    注意它是 15 秒冷却，别指望在战斗中途反复刷。</div>
+    <div class="tips"><b>特效：</b>用<b>两种粒子语言</b>分开表达两件事 ——
+    绕身体升起<b>一圈</b>"刻痕"光点，代表<b>+1 临时忆格</b>；
+    若成功撑开了法术书槽位，头顶再升起<b>两列竖排附魔字符</b>，<b>列数 = 法术上限 +2</b>。
+    这两个数字原本只存在于动作栏文字里，现在不抬头看提示也能确认生效。</div>
+  </div>
+</div>
+
+<div class="spell">
+  <div class="head">
+    <div class="icon">质</div>
+    <div style="flex:1">
+      <div class="name">写入 · 质忆</div>
+      <div class="id">mnemosyne:encode_trait</div>
+    </div>
+    <span class="badge b-uncommon">Uncommon</span>
+  </div>
+  <div class="body">
+    <div class="stats">
+      <span class="stat">法力 <b>30</b>（+4/级）</span>
+      <span class="stat">冷却 <b>5.0s</b></span>
+      <span class="stat">吟唱 <b>16 tick</b></span>
+      <span class="stat">持续 <b>30~60 秒</b></span>
+      <span class="stat">共鸣加成：每格 +5 秒</span>
+    </div>
+    <p class="use">把生物的<b>本质</b>写入忆格，暂时借用它的一项特性。
+    特质是<b>从生物身上自动探测</b>的 —— 不靠手写名单，所以<b>模组生物同样能借</b>。</p>
+    <p class="use" style="margin-top:8px"><b>能探测到的特质：</b></p>
+    <table style="margin:10px 0">
+      <tr><th>特质</th><th>判定依据</th></tr>
+      <tr><td>火焰免疫</td><td>该生物本身免疫火焰（烈焰人、岩浆怪、凋灵…）</td></tr>
+      <tr><td>水下呼吸</td><td>该生物能水下呼吸（鱼、海豚、守卫者、溺尸…）</td></tr>
+      <tr><td>凋零免疫</td><td>该生物是亡灵（僵尸、骷髅、幻翼、凋灵…）</td></tr>
+      <tr><td>击退抗性</td><td>该生物有击退抗性属性（铁傀儡、劫掠兽…）</td></tr>
+      <tr><td>跳跃提升</td><td>跳跃强度高于普通生物（马、兔子、山羊）</td></tr>
+      <tr><td>迅捷</td><td>移动速度高于普通生物（豹猫、马…）</td></tr>
+      <tr><td>漂浮</td><td>该生物会飞（幻翼、蜜蜂、恶魂…）</td></tr>
+    </table>
+    <div class="tips"><b>用法：</b>提前准备型法术。进地狱前先找只烈焰人借火免，比现找抗火药水稳。
+    持续时间受共鸣加成影响 —— 忆格占得越满，借得越久。
+    <br>⚠️ 设计上还规划了蜘蛛（爬墙）、末影人（瞬移）、海豚（游泳加速）、苦力怕（爆炸冲刺）四种，
+    但这些特质<b>还没实现</b>，所以暂时借不到 —— 等实现后会自动加入探测。
+    <br><b>整合包作者</b>：可以往数据包加 <code>#mnemosyne:has_essence</code> 实体类型标签，
+    把任意生物声明为"有本质"，无需改代码。</div>
+    <div class="tips"><b>特效：</b>从目标胸口到你自己的胸口拉一条<b>抽取链</b> ——
+    链的密度是<b>单向的</b>（起点稀、靠近你的那半段变密），末端再补一簇白色落点光，
+    读起来就是"记忆被抽过来、到手了"。这条链的方向刻意与锁定链相反：
+    锁定链表达"我要打你"，抽取链表达"我要拿你的东西"。
+    <br>⚠️ 如果这次抽到的是<b>通用记忆</b>（目标是 BOSS、或探测不到任何可借之物），
+    链只会画到<b>一半就断掉</b>、末端也没有落点光 ——
+    不用等到复诵时才发现拿到的是次品。</div>
+  </div>
+</div>
+
+<div class="spell">
+  <div class="head">
+    <div class="icon">痛</div>
+    <div style="flex:1">
+      <div class="name">写入 · 痛忆</div>
+      <div class="id">mnemosyne:encode_pain</div>
+    </div>
+    <span class="badge b-uncommon">Uncommon</span>
+  </div>
+  <div class="body">
+    <div class="stats">
+      <span class="stat">法力 <b>20</b>（+2/级）</span>
+      <span class="stat">冷却 <b>8.0s</b></span>
+      <span class="stat">吟唱 <b>6 tick</b></span>
+      <span class="stat">记录窗口 <b>6 秒</b>（上限随级 +5%）</span>
+    </div>
+    <p class="use"><b>展开痛忆窗口。</b>期间你受到的<b>每一次攻击都会当场原样打回给攻击者</b>
+    —— 不需要等到窗口结束，也不需要任何后续操作。</p>
+    <div class="tips"><b>用法：</b>反打手段。面对高爆发敌人时先开窗口，然后<b>主动去挨打</b> ——
+    你受多少，对方就受多少（按返还比例）。
+    <br>⚠️ 奉还走标准伤害管线，<b>会被护甲减免</b> ——"原样"指的是数值，不是无视防御。
+    <br>⚠️ 它<b>不再往忆格里放东西</b>了（名字里的"写入"是历史遗留），
+    所以它与忆格经济脱钩。</div>
+    <div class="tips"><b>特效：</b>窗口开启时在胸口炸开一圈品红环（"开始记录了"）；
+    窗口期内你身上会<b>持续绕着一圈品红尘 + 痛觉孢子</b>，一眼就能确认"我还在记录状态"。
+    每次挨打反击时，会从你的眼睛拉一条链<b>飞向攻击者</b> ——
+    链路方向与质忆的抽取链正好相反：那是"拿过来"，这是"打回去"。
+    <br>窗口是纯隐式状态（没有任何原版效果图标），所以这一圈微光是它唯一的可见凭证 ——
+    没有它，玩家放完法术到挨打之间是完全没有反馈的。</div>
+  </div>
+</div>
+
+
+<div class="spell">
+  <div class="head">
+    <div class="icon">溯</div>
+    <div style="flex:1">
+      <div class="name">残迹回溯</div>
+      <div class="id">mnemosyne:retrograde</div>
+    </div>
+    <span class="badge b-uncommon">Uncommon</span>
+  </div>
+  <div class="body">
+    <div class="stats">
+      <span class="stat">法力 <b>25</b>（+2/级）</span>
+      <span class="stat">冷却 <b>12s</b></span>
+      <span class="stat">瞬发</span>
+      <span class="stat">半径 <b>12 格</b>（+1/级）</span>
+      <span class="stat">回溯 <b>30s</b>（+5/级）</span>
+    </div>
+    <p class="use">读取一片区域最近 30 秒内发生过的三类事件 —— <b>伤害 / 施法 / 死亡</b>，用残影把它们重现出来。同时对<b>区域内最近一次伤害的施加者</b>打上「追迹」标记 5 秒，你对被标记目标的下一击提高 <b>15%</b>（+3/级）。</p>
+    <div class="tips"><b>用法：</b>窥忆只能读"眼前这一个目标现在什么样"，残迹回溯读的是"这片地方刚才发生了什么" —— 所以它能读到<b>已经跑掉的敌人</b>。被偷袭之后、打完架找不到人、想确认刚才是谁在暗处放法术，都是它的场合。冷却 12 秒，别连着放。</div>
+    <div class="tips"><b>特效：</b>沿地面铺开一圈缓慢向外扩散的靛蓝读取环（复用窥忆的粒子）；伤害事件从攻击者位置向受害者拉出一条<b>品红 → 白</b>的细轨迹，死亡事件原地立起一道靛蓝光柱。被标记者头顶浮一圈缓缓旋转的残影环，与忆格写入时的标记环同一形状。</div>
+  </div>
+</div>
+
+<div class="spell">
+  <div class="head">
+    <div class="icon">献</div>
+    <div style="flex:1">
+      <div class="name">献忆</div>
+      <div class="id">mnemosyne:oblation</div>
+    </div>
+    <span class="badge b-uncommon">Uncommon</span>
+  </div>
+  <div class="body">
+    <div class="stats">
+      <span class="stat">法力 <b>20</b>（+2/级）</span>
+      <span class="stat">冷却 <b>25s</b></span>
+      <span class="stat">瞬发</span>
+      <span class="stat">消耗 <b>1 个忆格</b></span>
+      <span class="stat">免法窗口 <b>10s</b>（+1/级）</span>
+    </div>
+    <p class="use">烧掉 <b>1 个忆格</b>（优先临时格），换 <b>10 秒内所有法术法力消耗降为 0</b>，且施法速度提高 <b>15%</b>（+3/级）。代价是自身叠加 <b>2 层认知过载</b>，持续 20 秒 —— 而自身过载满 3 层时，写入类法术写入的内容持续时间会缩短 30%。</p>
+    <div class="tips"><b>用法：</b><b>没有忆格时放不出来。</b>它是续航不是爆发：千忆归一是把全部忆格一次性换成伤害，献忆是拿一格换一段不要钱的连放窗口。开完窗口别急着写入 —— 反噬会让你写进去的东西缩水 30%，先把窗口里的输出打完。</div>
+    <div class="tips"><b>特效：</b>施法瞬间胸口一圈品红环<b>向内收拢消失</b>（与获得忆格时的向外扩散正好相反 = "少了一格"），随后身上亮起一层淡金色薄光罩住全身，表示免法窗口生效。</div>
+  </div>
+</div>
+
+<h3>中阶 · Rare</h3>
+
+<div class="spell">
+  <div class="head">
+    <div class="icon">失</div>
+    <div style="flex:1">
+      <div class="name">失忆</div>
+      <div class="id">mnemosyne:amnesia</div>
+    </div>
+    <span class="badge b-rare">Rare</span>
+  </div>
+  <div class="body">
+    <div class="stats">
+      <span class="stat">法力 <b>40</b>（+6/级）</span>
+      <span class="stat">冷却 <b>12.0s</b></span>
+      <span class="stat">瞬发</span>
+      <span class="stat">射程 <b>20 格</b></span>
+      <span class="stat">持续 <b>4~8 秒</b></span>
+      <span class="stat">眩晕 <b>30~40 tick</b></span>
+      <span class="stat">5 级可波及 <b>8 格内第二目标</b></span>
+    </div>
+    <p class="use">遗忘系的单体起手技：<b>剥夺目标的全部特殊能力</b> + <b>短暂眩晕</b>。
+    5 级时会自动波及目标周围 8 格内的另一个敌人。</p>
+    <div class="tips"><b>用法：</b>打断技。敌人正在起手大招时给它一发，眩晕能让它彻底卡住。
+    5 级的二段波及让它在怪群里效率翻倍。
+    <br>⚠️ <b>本流派的招牌</b>。早期版本另有一个只摘一项的「遗忘」，与它太像、
+    玩家分不清该用哪个，已删除 —— 现在单体和群体各一档：<b>失忆</b>打单体，
+    <b>集体遗忘</b>清场，<b>遗忘诅咒</b>占区域。</div>
+    <div class="tips"><b>特效：</b>从眼睛到目标胸口拉一条<b>锁定链</b>（双色尘逐点铺成），
+    命中时目标身上爆出一圈记忆碎片。5 级的<b>第二目标</b>会各自再拉一条链、再爆一次 ——
+    所以"这次多摘了一个"是看得出来的。发呆的 1.5~2 秒里目标头顶每 5 tick 冒一次记忆碎屑，
+    否则「发呆」这个状态在原版里连个图标都没有。</div>
+  </div>
+</div>
+
+<div class="spell">
+  <div class="head">
+    <div class="icon">扩</div>
+    <div style="flex:1">
+      <div class="name">忆格扩张</div>
+      <div class="id">mnemosyne:expand_mind</div>
+    </div>
+    <span class="badge b-rare">Rare</span>
+  </div>
+  <div class="body">
+    <div class="stats">
+      <span class="stat">法力 <b>45</b>（+5/级）</span>
+      <span class="stat">冷却 <b>30.0s</b></span>
+      <span class="stat">瞬发</span>
+      <span class="stat">+<b>2~4</b> 临时忆格</span>
+      <span class="stat">持续 <b>30~60 秒</b></span>
+      <span class="stat">4 级：施法速度惩罚减半</span>
+      <span class="stat">5 级：法力惩罚也减半</span>
+    </div>
+    <p class="use">临时开启额外忆格，并且从 4 级起<b>减免忆格带来的惩罚</b>。</p>
+    <div class="tips"><b>用法：</b>打 BOSS 前的"开团技"。先扩张忆格、把记忆塞满，然后靠共鸣加成打一波爆发。
+    5 级版本把施法速度和法力的惩罚都减半，等于用 45 点法力换来"满忆格但不太难受"。</div>
+    <div class="tips"><b>特效：</b>施法后绕身体升起若干圈"刻痕"光点，<b>环数 = 获得的临时忆格数</b>（2~4 圈），
+    顶端再撒一把白色光尘。这个法术改的全是内部计数，原本屏幕上毫无变化 ——
+    现在"加了几格"一眼可读，不必等动作栏那行「忆格 N / M」。</div>
+  </div>
+</div>
+
+<div class="spell">
+  <div class="head">
+    <div class="icon">灯</div>
+    <div style="flex:1">
+      <div class="name">走马灯</div>
+      <div class="id">mnemosyne:recollection</div>
+    </div>
+    <span class="badge b-rare">Rare</span>
+  </div>
+  <div class="body">
+    <div class="stats">
+      <span class="stat">法力 <b>50~70</b>（+5/级）</span>
+      <span class="stat">冷却 <b>110~70s</b>（−10/级）</span>
+      <span class="stat">瞬发</span>
+      <span class="stat">射程 <b>自身</b></span>
+      <span class="stat">回光窗口 <b>6~14 秒</b>（+2/级）</span>
+      <span class="stat">记忆空白 <b>12~8 秒</b>（−1/级）</span>
+    </div>
+    <p class="use"><b>点亮「回光」—— 一段随等级 6~14 秒的免死窗口。</b>
+    窗口内你受到的<b>第一次致死伤害不会杀死你</b> ——
+    血量会被拉回 50%，并爆出一圈靛蓝书页粒子（不死图腾的触发形态，换成了忆海的配色）。</p>
+    <p class="use" style="margin-top:8px"><b>代价</b>：触发后立刻进入 <b>12~8 秒「记忆空白」</b>
+    （随等级递减）—— 临时忆格<b>全部清空</b>、你受到的忆海法术伤害 <b>+50%</b>、
+    法力恢复 <b>−40%</b>。</p>
+    <div class="tips"><b>用法：</b>打 BOSS 或闯遗迹前的"保险"。窗口内没挨到致命伤，「回光」会自然消散，
+    <b>不进入负面状态</b> —— 所以它也可以是纯粹的预判性投资。
+    <br><b>等级收益是双向的</b>：窗口更长、冷却更短、空白更短，代价只是耗蓝更高 ——
+    低等级是"保命底牌"，升满才有资格当"常规保险"。
+    <br><b>逐级数值</b>（5 级制，四项全部线性）：
+    免死窗口 <b>6 / 8 / 10 / 12 / 14</b> 秒 ·
+    冷却 <b>110 / 100 / 90 / 80 / 70</b> 秒 ·
+    耗蓝 <b>50 / 55 / 60 / 65 / 70</b> ·
+    记忆空白 <b>12 / 11 / 10 / 9 / 8</b> 秒。
+    <br>名字取自「回光返照」—— 走马灯亮起的那一瞬，是你向死而生的最后一段清醒。</div>
+  </div>
+</div>
+
+<div class="spell">
+  <div class="head">
+    <div class="icon">咒</div>
+    <div style="flex:1">
+      <div class="name">遗忘诅咒</div>
+      <div class="id">mnemosyne:curse_of_oblivion</div>
+    </div>
+    <span class="badge b-rare">Rare</span>
+  </div>
+  <div class="body">
+    <div class="stats">
+      <span class="stat">法力 <b>60</b>（+6/级）</span>
+      <span class="stat">冷却 <b>25.0s</b></span>
+      <span class="stat">瞬发</span>
+      <span class="stat">射程 <b>20 格</b></span>
+      <span class="stat">领域 <b>8~15 秒</b></span>
+      <span class="stat">每 <b>40~20 tick</b> 抹一项</span>
+      <span class="stat">最多抹 <b>3 项</b></span>
+      <span class="stat">受伤减免 <b>15%~25%</b></span>
+    </div>
+    <p class="use">在目标位置留下一片<b>持续抹除记忆的领域</b>。领域内的敌人会被反复遗忘能力，
+    同时它们造成的伤害降低 15%~25%。领域消失后残留 3 秒。</p>
+    <div class="tips"><b>用法：</b>阵地战神器。往怪群或刷怪点一放，等于开了个"敌人变傻"的区域。
+    因为会反复施加遗忘，它对持续刷怪的场景（刷怪笼、袭击）特别有效。
+    <br><b>领域是"看得见"的：</b>地面两圈反向旋转的符阵、不断上升的记忆碎片、
+    边界上往上爬的光柱，而且每次抹掉一项能力都会向外扩散一圈脉冲 ——
+    所以你不看状态栏也能数出已经抹了几项。领域结束后符阵还会向内收束 3 秒，
+    和效果的残留时间一致。</div>
+  </div>
+</div>
+
+
+<div class="spell">
+  <div class="head">
+    <div class="icon">帧</div>
+    <div style="flex:1">
+      <div class="name">帧缚</div>
+      <div class="id">mnemosyne:framebind</div>
+    </div>
+    <span class="badge b-rare">Rare</span>
+  </div>
+  <div class="body">
+    <div class="stats">
+      <span class="stat">法力 <b>45</b>（+3/级）</span>
+      <span class="stat">冷却 <b>20s</b></span>
+      <span class="stat">长吟 <b>1.5s</b></span>
+      <span class="stat">持续 <b>5s</b>（+1/级）</span>
+      <span class="stat">违反应伤害 <b>6~12</b></span>
+    </div>
+    <p class="use">吟唱期间会<b>记录你自己的移动轨迹</b>。吟唱结束时，终点半径 4 格内的敌人被强制"按 24 帧走路"：每 tick 位移超过 <b>0.28 格</b>（约等于疾跑速度）就触发 <b>1 秒冻结</b>。冻结期间受到任意伤害会立即解除，但那一次伤害 <b>×1.5</b>。</p>
+    <div class="tips"><b>用法：</b>记忆流派唯一的"规则型控制" —— 它不禁用能力，只是<b>禁止一切快速移动</b>，等于封死末影珍珠、鞘翅和瞬移逃跑。最妙的是冻结后的二选一：<b>不打</b>，敌人白站 1 秒；<b>打</b>，它立刻解冻但你这一下吃 1.5 倍。对玩家目标冻结减半（0.5 秒）且 10 秒内只触发一次；BOSS 不会被冻住，只是被限制移动。</div>
+    <div class="tips"><b>特效：</b>目标沿移动路径每隔一段留下一枚半透明的靛蓝<b>「帧方块」残影</b>，一共 24 枚；违反规则时全部残影同时闪红并定格，头顶落下眩晕碎屑。数字对不上帧数不要紧，视觉上要的是"被切成一格一格"的感觉。</div>
+  </div>
+</div>
+
+<div class="spell">
+  <div class="head">
+    <div class="icon">铭</div>
+    <div style="flex:1">
+      <div class="name">铭刻适应</div>
+      <div class="id">mnemosyne:adaptation</div>
+    </div>
+    <span class="badge b-rare">Rare</span>
+  </div>
+  <div class="body">
+    <div class="stats">
+      <span class="stat">法力 <b>45</b>（+3/级）</span>
+      <span class="stat">冷却 <b>30s</b></span>
+      <span class="stat">瞬发</span>
+      <span class="stat">铭刻期 <b>8s</b>（+1/级）</span>
+      <span class="stat">减伤 <b>30%~50%</b></span>
+    </div>
+    <p class="use">施法后进入 <b>8 秒铭刻期</b>，记录这期间你受到的每一次伤害属于哪种类型。铭刻期结束结算：若某一种类型占比超过 <b>60%</b>，你对它获得 <b>30%</b>（+5/级）减伤；否则你对期间出现过的<b>所有类型</b>各获得 <b>15%</b>（+2/级）减伤。减伤持续 30 秒。</p>
+    <div class="tips"><b>用法：</b>铭刻期<b>必须主动挨打</b>才有效果 —— 躲得越干净，收益越低，这是它最反直觉的地方。打单一 Boss 时故意只吃它的主伤害类型去换专注减伤；打杂兵群时尽量多挨几种类型换广谱减伤。牛奶桶也清不掉它 —— 减伤<b>根本不挂在状态效果上</b>，所以没有可清的东西（代价是服务器重启后会丢失，但它是 30 秒的战斗内增益，无所谓）。重新施法会覆盖上一次的铭刻。</div>
+    <div class="tips"><b>特效：</b>铭刻期身上浮起一圈缓慢旋转的靛蓝刻痕环（与痛忆录制时那套同一形状，语义就是"正在记录"）；结算瞬间环收拢，贴身凝成一层淡蓝护膜并停留到减伤结束 —— 护膜是它唯一的可见凭证。</div>
+  </div>
+</div>
+
+<h3>高阶 · Epic / Legendary</h3>
+
+<div class="spell">
+  <div class="head">
+    <div class="icon">崩</div>
+    <div style="flex:1">
+      <div class="name">认知崩坏</div>
+      <div class="id">mnemosyne:cognitive_collapse</div>
+    </div>
+    <span class="badge b-epic">Epic</span>
+  </div>
+  <div class="body">
+    <div class="stats">
+      <span class="stat">法力 <b>70</b>（+8/级）</span>
+      <span class="stat">冷却 <b>12.0s</b></span>
+      <span class="stat">瞬发</span>
+      <span class="stat">射程 <b>24 格</b></span>
+      <span class="stat">伤害 <b>8~12 / 每层过载</b></span>
+      <span class="stat">眩晕 <b>60~100 tick</b></span>
+    </div>
+    <p class="use">引爆目标身上的<b>认知过载层数</b>：每层造成 8~12 点伤害，并造成 3~5 秒眩晕。
+    4 级起，眩晕结束后的一段时间内再打它会有额外加成。</p>
+    <div class="tips"><b>用法：</b>忆矢的"终结技"。先用忆矢/窥忆叠满 5~6 层过载，再用这个引爆 ——
+    伤害随层数线性放大。这是忆海唯一的高爆发组合。</div>
+    <div class="tips"><b>特效：</b>先拉一条锁定链，随后<b>爆发的规模直接等于层数</b> ——
+    N 层就是 N 圈同心尘环（一圈比一圈大、一圈比一圈高，靛蓝与品红交替）+ 一根 N×3 高的粒子柱，
+    外加一帧白光爆闪。眩晕期间目标头顶每 5 tick 冒一次记忆碎屑。
+    ⚠️ 没有目标、或目标身上 0 层过载时会给动作栏提示，不再"静默放空"。</div>
+  </div>
+</div>
+
+<div class="spell">
+  <div class="head">
+    <div class="icon">夺</div>
+    <div style="flex:1">
+      <div class="name">记忆掠夺</div>
+      <div class="id">mnemosyne:memory_theft</div>
+    </div>
+    <span class="badge b-epic">Epic</span>
+  </div>
+  <div class="body">
+    <div class="stats">
+      <span class="stat">法力 <b>90</b>（+10/级）</span>
+      <span class="stat">冷却 <b>45.0s</b></span>
+      <span class="stat">吟唱 <b>40/40/30/30/20 tick</b></span>
+      <span class="stat">射程 <b>8 格</b></span>
+      <span class="stat">掠夺 <b>1~2 个</b>增益效果</span>
+      <span class="stat">5 级：可留永久记忆</span>
+    </div>
+    <p class="use"><b>长吟。</b>从目标身上<b>撕下它的增益效果（药水 buff）</b>，当场转移到你自己身上。
+    目标会<b>失去</b>这些效果，你得到它们 —— 而且<b>持续时间变成原来的 1.5 倍</b>。</p>
+    <p class="use" style="margin-top:8px"><b>掠夺规则</b>：每次 1~2 个（随等级）；
+    只抢<b>增益</b>类（把对方的虚弱抢到自己身上是纯亏）；
+    <b>5 级</b>时抢来的效果<b>永久生效</b>（直到死亡）且不计共鸣惩罚。</p>
+    <div class="tips"><b>用法：</b>吟唱很长（最久 2 秒），必须贴脸（8 格）且不能被打断。
+    建议先用「失忆」控住目标再吟唱。5 级掠夺到的记忆是<b>永久格</b>，不计共鸣惩罚。</div>
+    <div class="tips"><b>特效：</b>成功时先拉一条<b>抽取链</b>（目标 → 你），
+    随后你身上升起 <b>N 圈品红环，圈数 = 这一发实际抢到的效果数</b>（1~2 圈），
+    配一簇痛觉孢子 —— 动作栏那行「抢到 N 个」是数字，环是同一个数字的可见形态。
+    <br>⚠️ 刻意<b>不用</b>命中爆发：掠夺不是打击，在对方身上炸一下会把语义带偏，
+    让人以为这是个伤害技能。只有 <b>BOSS 免疫</b>走削弱路径时才是"我打它"，
+    那时链路方向反过来（你 → 目标）并补一发命中爆发。</div>
+  </div>
+</div>
+
+<div class="spell">
+  <div class="head">
+    <div class="icon">集</div>
+    <div style="flex:1">
+      <div class="name">集体遗忘</div>
+      <div class="id">mnemosyne:mass_amnesia</div>
+    </div>
+    <span class="badge b-epic">Epic</span>
+  </div>
+  <div class="body">
+    <div class="stats">
+      <span class="stat">法力 <b>100</b>（+10/级）</span>
+      <span class="stat">冷却 <b>40.0s</b></span>
+      <span class="stat">吟唱 <b>40 tick</b></span>
+      <span class="stat">范围：以自身为中心，半径 8~12 格</span>
+      <span class="stat">持续 <b>6~12 秒</b></span>
+      <span class="stat">4 级：保护友军</span>
+      <span class="stat">5 级：延迟锁定 40 tick</span>
+    </div>
+    <p class="use">一次抹除<b>周围所有生物</b>的记忆，附带减速。吟唱 2 秒，完成瞬间在
+    <b>实际判定半径上爆出一圈领域粒子</b> —— 让你清楚看到影响到多远。</p>
+    <div class="tips"><b>用法：</b>被围殴时的保命技。一发下去整片怪都忘了怎么打你。
+    <br>⚠️ 它是<b>吟唱</b>技，2 秒内被打断就白放 —— 所以它更像"提前铺好的脱身手段"，
+    而不是"被围住时无脑按一下"。吟唱也给了队友跑出范围的机会。
+    <br>⚠️ 3 级及以下<b>不区分敌我</b>，会连队友/宠物一起忘 —— 4 级起才会保护友军。</div>
+  </div>
+</div>
+
+<div class="spell">
+  <div class="head">
+    <div class="icon">既</div>
+    <div style="flex:1">
+      <div class="name">既视感</div>
+      <div class="id">mnemosyne:deja_vu</div>
+    </div>
+    <span class="badge b-epic">Epic</span>
+  </div>
+  <div class="body">
+    <div class="stats">
+      <span class="stat">法力 <b>80</b>（+8/级）</span>
+      <span class="stat">冷却 <b>30.0s</b></span>
+      <span class="stat">瞬发</span>
+      <span class="stat">重演窗口 <b>60~120 tick</b></span>
+      <span class="stat">威力 <b>80%~95%</b></span>
+    </div>
+    <p class="use">倒回一瞬，让<b>你刚刚施放过的法术</b>再发生一次。</p>
+    <div class="tips"><b>⚠️ 用过即焚</b>：被重演过的法术会<b>从记忆库里移除</b>，
+必须重新施放才能再被记录 —— 否则"放一次大招 + 无限重演"会成为本流派最强的循环。
+<br><b>⚠️ 记录容量 = 法术等级</b>（1 级只重演最近 1 个，5 级重演最近 5 个）。
+<br><b>用法：</b>放完一发大招，立刻接既视感 —— 同一发再来一次。
+    威力随等级提升（80% → 95%），窗口也变长。历史上限 8 条。</div>
+    <div class="tips"><b>特效：</b>起手先在脚下炸开一圈 1.5 格的<b>回响环</b>，告诉你"倒带开始了"；
+    随后<b>每成功重演一个法术，绕身体升一圈光环</b> ——
+    圈数 = 这一发实际重演了几个法术，由内向外逐圈变大、颜色交替。
+    记录容量 = 法术等级，所以等级越高，一次能亮起的光环也越多。</div>
+  </div>
+</div>
+
+<div class="spell">
+  <div class="head">
+    <div class="icon">海</div>
+    <div style="flex:1">
+      <div class="name">忆海</div>
+      <div class="id">mnemosyne:sea_of_memory</div>
+    </div>
+    <span class="badge b-legend">Legendary</span>
+  </div>
+  <div class="body">
+    <div class="stats">
+      <span class="stat">法力 <b>120</b>（+10/级）</span>
+      <span class="stat">冷却 <b>90.0s</b></span>
+      <span class="stat">吟唱 <b>60 tick</b></span>
+      <span class="stat">领域 <b>15~30 秒</b></span>
+      <span class="stat">每秒叠层上限 <b>8~15</b></span>
+      <span class="stat">自身 <b>+3 临时忆格</b></span>
+    </div>
+    <p class="use">以原始记忆淹没一片区域，让其中的一切都沉进回想里。
+    领域内每秒给敌人叠认知过载（上限随等级 8~15 层），同时给自己 +3 临时忆格。</p>
+    <div class="tips"><b>视觉</b>：领域有<b>三层表现</b> —— 贴地漫开的一整片记忆符文（"水漫上来"）、
+    缓慢旋转的边界光环、以及上方漂浮的青色碎片。开场与结算各有一次明显的爆发。
+    <br>⚠️ 那圈<b>边界环是玩法信息</b>，不只是装饰 —— 结算只对环内的人生效。</div>
+    <div class="tips"><b>用法：</b>这是"场地"而不是"爆发"。先放忆海，让敌人被持续叠层，
+    再用认知崩坏引爆 —— 上限 15 层意味着理论伤害远超普通叠层上限（6 层）。
+    <br>⭐ <b>15~30 秒</b>（原 8~15 秒）—— 时长翻倍之后，"布场 → 拖时间 → 收割"
+    这套节奏才真正跑得起来。</div>
+  </div>
+</div>
+
+<div class="spell">
+  <div class="head">
+    <div class="icon">千</div>
+    <div style="flex:1">
+      <div class="name">千忆归一</div>
+      <div class="id">mnemosyne:thousand_memories</div>
+    </div>
+    <span class="badge b-legend">Legendary</span>
+  </div>
+  <div class="body">
+    <div class="stats">
+      <span class="stat">法力 <b>100</b>（+10/级）</span>
+      <span class="stat">冷却 <b>90.0s</b></span>
+      <span class="stat">吟唱 <b>50 tick</b></span>
+      <span class="stat">射程 <b>24 格</b></span>
+      <span class="stat">伤害 <b>8~14 / 每段记忆</b></span>
+      <span class="stat">遗忘 <b>4~8 秒</b></span>
+      <span class="stat">5 级：50% 保留永久格</span>
+    </div>
+    <p class="use"><b>点燃你持有的全部忆格</b>，把它们全部转化为伤害打出去，并对目标施加遗忘。
+    忆格越多，伤害越高。</p>
+    <p class="use" style="margin-top:8px"><b>伤害拆分</b>（这是它"一定疼"的原因）：
+    总伤害被拆成三段 ——</p>
+    <table>
+      <tr><th>段</th><th>占比</th><th>结算方式</th></tr>
+      <tr><td><b>普通</b></td><td><b>55%</b></td><td>受护甲与记忆抗性影响，<b>立刻结算</b></td></tr>
+      <tr><td><b>真实</b></td><td><b>15%</b></td><td>无视护甲 / 附魔 / 抗性药水 / 记忆抗性，<b>立刻结算</b></td></tr>
+      <tr><td><b>元素</b></td><td><b>30%</b></td><td><b>2 秒内分 4 跳</b>打出去（真正的 DoT），另附随机元素状态</td></tr>
+    </table>
+    <div class="tips"><b>为什么元素段是"分 4 跳"</b>：这是真正的持续伤害，不是一次性打完。
+    附带的状态（火焰 / 凋零 / 中毒 / <b>迟缓</b>）只负责"看得见"，
+    <b>伤害与它无关</b> —— 所以抽到「迟缓」（本身零伤害）也不会让这一发少掉 30%。</div>
+    <div class="tips"><b>用法：</b>终局技。先用「忆格扩张」把忆格堆到 7~8 格，再放这个 ——
+    8 格是 64~112 点伤害。5 级有 50% 概率<b>不烧掉永久格</b>。
+    <br>因为里面有 10% 是无视一切减免的真实伤害，所以它对"堆满抗性"的目标也能打出有效输出 ——
+    这是它区别于其他法术的地方。放完之后你的忆格是空的，记得重新积累。</div>
+    <div class="tips"><b>特效：</b>先从眼睛到目标胸口拉一条 24 点的<b>锁定链</b>，
+    随后在目标脚下<b>逐层炸开同心环，层数 = 这一发烧掉的忆格数</b>（最多显示 8 层），
+    环与环交替靛蓝 / 品红，中轴再补一柱青色光点。
+    "忆格越多伤害越高"这句抽象描述，现在直接变成屏幕上环的层数 ——
+    放之前你有几格，一眼就能数出来。</div>
+  </div>
+</div>
+
+<!-- ============ 装备 ============ -->
+
+<div class="spell">
+  <div class="head">
+    <div class="icon">域</div>
+    <div style="flex:1">
+      <div class="name">无尽忆域</div>
+      <div class="id">mnemosyne:endless_realm</div>
+    </div>
+    <span class="badge b-legend">Legendary</span>
+  </div>
+  <div class="body">
+    <div class="stats">
+      <span class="stat">法力 <b>170</b>（+8/级）</span>
+      <span class="stat">冷却 <b>120s</b></span>
+      <span class="stat">长吟 <b>3.0s</b></span>
+      <span class="stat">领域半径 <b>10 格</b>（+1/级）</span>
+      <span class="stat">时长 <b>6s</b>（+1/级）</span>
+    </div>
+    <p class="use">展开领域。领域内敌人<b>彻底无法行动</b> —— 不能移动、不能攻击、不能施法、不能使用物品，同时每秒叠加 <b>1 层认知过载</b>。代价是领域期间<b>你自己也无法移动</b>，且不能施放其他法术。<b>这个法术不造成任何伤害。</b></p>
+    <div class="tips"><b>用法：</b>忆海是"给自己 +3 忆格、给敌人叠层、结束时一起结算伤害"，无尽忆域是<b>纯把战场按停 6~10 秒</b> —— 它是控制手段，不是输出手段。用它争取读忆碑、撤退、或者等下一个关键冷却的时间。BOSS 免疫"无法行动"，只会移动速度减半并照常叠层。</div>
+    <div class="tips"><b>特效：</b>直接复用「忆海」的穹顶粒子与音效，<b>不新增任何素材</b>。唯一区别是配色方向：忆海是靛蓝 → 品红<b>向外发散</b>（记忆涌出去），无尽忆域是白 → 靛蓝<b>向内收敛</b>（信息灌进来）。看到向里收的白色穹顶，就知道是无尽忆域。</div>
+  </div>
+</div>
+
+<h2 id="gear"><span class="n">05</span>装备与物品</h2>
+
+<h3>5.1 法术容器 —— 复用官方，本模组不做自己的法书</h3>
+<div class="note info">
+<b>忆海没有自己的法术书。</b>原先自研的 5 级法书（残忆 / 铭忆 / 溯忆 / 沧忆 / 忆海法典）
+已于 2026-09-18 全部删除 —— 它们与 ISS 官方的学徒 / 法师 / 大法师法书<b>功能完全重叠</b>，
+属于多余设计。
+</div>
+<p>忆海法术直接装进 <b>ISS 官方法术书</b>。忆海只提供<b>忆者法袍</b>作为本学派的属性来源。</p>
+<table>
+  <tr><th>你想做的事</th><th>怎么做</th></tr>
+  <tr><td>带更多忆海法术</td><td>用更高级的 <b>ISS 官方法书</b>（学徒 3 槽 → 大法师 8 槽）</td></tr>
+  <tr><td>提高记忆法术强度 / 抗性</td><td>穿<b>忆者法袍</b>（见 5.2），4 件套合计 <b>+20% 强度 / +10% 抗性</b></td></tr>
+  <tr><td>把忆海法术抄成卷轴</td><td>官方抄写台 + 忆海卷轴（忆者遗迹的箱子定向产出）</td></tr>
+  <tr><td>忆格 +1 / +2</td><td>忆者法袍 2 件 / 4 件套（见 5.2）</td></tr>
+</table>
+
+<h3>5.2 忆者法袍</h3>
+<table>
+  <tr><th>部件</th><th>护甲值</th><th>耐久</th></tr>
+  <tr><td>忆者头冠</td><td>3</td><td>286</td></tr>
+  <tr><td>忆者法袍</td><td>8</td><td>416</td></tr>
+  <tr><td>忆者护腿</td><td>6</td><td>390</td></tr>
+  <tr><td>忆者长靴</td><td>3</td><td>338</td></tr>
+</table>
+<p><b>套装效果：</b>2 件 +1 忆格，4 件再 +1 忆格（合计 +2，基础 3 → 5），并且<b>永久记忆不计共鸣惩罚</b>。</p>
+
+<h3>5.3 武器与工具</h3>
+<table>
+  <tr><th>物品</th><th>说明</th></tr>
+  <tr><td><b>忆晶权杖</b> <code>memory_staff</code></td>
+      <td>记忆法术强度 <b>+15%</b>，攻击力 +3，攻速 −3。可以蓄力施法。</td></tr>
+  <tr><td><b>拾忆匕首</b> <code>recollector</code></td>
+      <td>用它击杀生物时触发「拾忆」，把对方的记忆收进你的忆格。</td></tr>
+</table>
+
+<h3>5.4 材料</h3>
+<table>
+  <tr><th>物品</th><th>来源</th><th>用途</th></tr>
+  <tr><td><b>忆晶</b> <code>memory_crystal</code></td><td>遗迹箱子、忆晶簇</td><td>全部配方的基础材料</td></tr>
+  <tr><td><b>忆之墨水</b> <code>mnemonic_ink</code></td><td>忆晶 + 墨囊；或褪色书页×2 + 墨囊</td><td>装备与抄写</td></tr>
+  <tr><td><b>褪色的书页</b> <code>faded_page</code></td><td>遗迹箱子</td><td>转化为忆之墨水</td></tr>
+  <tr><td><b>忆符文</b> <code>memory_rune</code></td><td>遗迹箱子</td><td>装饰 / 后续版本用途</td></tr>
+</table>
+
+<h3>5.5 全部配方</h3>
+<table>
+  <tr><th>产物</th><th>材料</th></tr>
+  <tr><td>忆之墨水 ×2</td><td>忆晶 ×1 + 墨囊 ×1</td></tr>
+  <tr><td>忆之墨水 ×1</td><td>褪色的书页 ×2 + 墨囊 ×1</td></tr>
+  <tr><td>忆晶权杖</td><td>忆晶 ×4 + 忆之墨水 ×2 + 木棍 ×2</td></tr>
+  <tr><td>拾忆匕首</td><td>忆晶 ×2 + 忆之墨水 ×1 + 铁锭 ×2</td></tr>
+  <tr><td>忆者头冠</td><td>忆晶 ×2 + 忆之墨水 ×1 + 皮革 ×6</td></tr>
+  <tr><td>忆者法袍</td><td>忆晶 ×4 + 忆之墨水 ×1 + 皮革 ×4</td></tr>
+  <tr><td>忆者护腿</td><td>忆晶 ×3 + 忆之墨水 ×1 + 皮革 ×5</td></tr>
+  <tr><td>忆者长靴</td><td>忆晶 ×2 + 忆之墨水 ×1 + 皮革 ×4</td></tr>
+</table>
+
+<h3>5.6 卷轴</h3>
+<p>忆海<b>没有自己的卷轴物品</b> —— 它复用官方的 <code>irons_spellbooks:scroll</code>。
+忆海法术的卷轴会显示忆海的靛蓝/品红配色，可以在官方抄写台里正常使用。</p>
+<p>卷轴来源：<b>忆者遗迹的箱子</b>（掉落表已按 <code>mnemosyne:memory</code> 学派过滤，
+所以遗迹里开出的卷轴一定是忆海法术）。另外，忆海法术也会进入普通战利品箱的随机法术池。</p>
+
+<!-- ============ 世界 ============ -->
+<h2 id="world"><span class="n">06</span>忆者遗迹</h2>
+<p class="lead">忆海唯一的建筑生成物。它是法术、忆晶、忆碑和卷轴的主要来源。</p>
+
+<div class="grid2">
+  <div class="card">
+    <h3 style="margin-top:0">怎么找</h3>
+    <p style="margin:0">指令：<code>/locate structure mnemosyne:memory_ruin</code><br>
+    或使用寻路指南针类工具自然探索。</p>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">里面有什么</h3>
+    <p style="margin:0">忆砖建筑、<b>忆碑</b>（解锁法术）、忆晶簇、4 种箱子（档案库 / 储藏 / 陶罐 / 忆核）。</p>
+  </div>
+</div>
+
+<h3>6.1 忆碑</h3>
+<p>右键忆碑可以"记起"一个随机的忆海法术。每块碑每人只能读一次；被读过的碑会从靛蓝变暗为品红。
+当一块碑里已经没有你未学会的法术时，会提示「这座忆碑里已经没有你尚未记起的法术了」。</p>
+
+<div class="note info">
+  <b>忆碑没有合成配方</b> —— 只能从遗迹里拿。这是刻意的进度门槛（对齐 ISS 邪术学派的做法）。
+</div>
+
+<h3>6.2 箱子战利品</h3>
+<table>
+  <tr><th>箱子</th><th>内容</th></tr>
+  <tr><td>档案库</td><td>忆海卷轴（定向）、忆晶、忆符文</td></tr>
+  <tr><td>基本储藏</td><td>忆晶、褪色书页、忆海卷轴</td></tr>
+  <tr><td>腐朽陶罐</td><td>零散材料</td></tr>
+  <tr><td>忆核</td><td>高价值：忆海卷轴、大量忆晶、忆符文</td></tr>
+</table>
+
+<h3>6.3 忆魇</h3>
+<p><b>忆魇（memory_wraith）</b> 是忆海的专属怪物 —— 遗迹的守护者。
+它<b>会在主世界自然生成</b>（低权重，Forge 生物群系修饰符），也可以用刷怪蛋或
+<code>/summon mnemosyne:memory_wraith</code> 生成。它是<b>忆海卷轴</b>与<b>忆晶</b>的稳定来源。</p>
+<table>
+  <tr><th>属性</th><th>值</th></tr>
+  <tr><td>生命</td><td>100</td></tr>
+  <tr><td>攻击</td><td>4</td></tr>
+  <tr><td>行为</td><td><b>中立</b> —— 不主动攻击，被打才反击</td></tr>
+  <tr><td>移动</td><td>会飞，跟随范围 32 格</td></tr>
+</table>
+
+<div class="note warn">
+  <b>它只受忆海法术的满额伤害。</b> 用剑砍、用火烧、让它摔死 —— 这些固定只造成 <b>1 点</b>伤害。
+  <br>想杀掉它，你必须真的用忆海的法术。这让它成为检验你是否掌握了本学派的敌人。
+</div>
+
+<!-- ============ 指令 ============ -->
+<h2 id="cmd"><span class="n">07</span>指令</h2>
+<p class="lead">忆海提供三条指令，全部挂在 <code>/mnemosyne</code> 下。</p>
+
+<table>
+  <tr><th>指令</th><th>权限</th><th>作用</th></tr>
+  <tr>
+    <td><code>/mnemosyne unlock [玩家]</code></td>
+    <td>OP（等级 2）</td>
+    <td><b>一键解锁全部忆海法术</b>，跳过读忆碑的进度门槛。不指定玩家则给自己。<br>
+    这是测试全部 21 个法术最快的办法。</td>
+  </tr>
+  <tr>
+    <td><code>/mnemosyne engrams [玩家]</code></td>
+    <td>所有人</td>
+    <td>查看忆格使用情况（<code>N / M</code>）与每格记忆的内容。<br>
+    因为忆格没有常驻界面，这是<b>主动查看忆格的唯一途径</b>，所以不要求 OP。</td>
+  </tr>
+  <tr>
+    <td><code>/mnemosyne clear [玩家]</code></td>
+    <td>OP（等级 2）</td>
+    <td>清空全部忆格。调试用。</td>
+  </tr>
+</table>
+
+<div class="note ok">
+  <b>推荐测试流程：</b> 进游戏后 <code>/mnemosyne unlock</code> 解锁全部法术，
+  然后 <code>/give @s irons_spellbooks:spell_book</code> 拿一本官方法书，
+  用官方抄写台或创造模式把法术装进去，就能逐个试了。
+</div>
+
+<!-- ============ 配置 ============ -->
+<h2 id="config"><span class="n">08</span>配置项</h2>
+<p class="lead">配置文件在 <code>config/mnemosyne-server.toml</code>（服务端侧数值）。改完需要重启游戏或服务器。</p>
+
+<h3>8.1 忆格系统 <code>[engram]</code></h3>
+<table>
+  <tr><th>键</th><th>默认</th><th>说明</th></tr>
+  <tr><td><code>baseSlots</code></td><td>3</td><td>基础忆格数</td></tr>
+  <tr><td><code>maxSlots</code></td><td>8</td><td>常驻忆格硬上限</td></tr>
+  <tr><td><code>decaySeconds</code></td><td>120</td><td>记忆有效期（秒）</td></tr>
+  <tr><td><code>resonancePerSlot</code></td><td>0.20</td><td>每格共鸣加成（+20% 法术威力）</td></tr>
+  <tr><td><code>castSpeedPenaltyPerSlot</code></td><td>0.08</td><td>每格施法速度惩罚（−8%）</td></tr>
+  <tr><td><code>manaPenaltyPerSlot</code></td><td>0.10</td><td>每格法力消耗惩罚（+10%）</td></tr>
+  <tr><td><code>permanentFreeOfResonance</code></td><td>true</td><td>永久忆格是否免疫共鸣惩罚</td></tr>
+</table>
+
+<h3>8.2 认知过载 <code>[overload]</code></h3>
+<table>
+  <tr><th>键</th><th>默认</th><th>说明</th></tr>
+  <tr><td><code>damagePerStack</code></td><td>0.08</td><td>每层使目标受到的忆海法术伤害 +8%（线性，对所有忆海法术生效）</td></tr>
+  <tr><td><code>maxStacksInCombat</code></td><td>6</td><td>普通战斗的层数上限（各法术自己的上限再与它取小）</td></tr>
+  <tr><td><code>maxStacksInSea</code></td><td>15</td><td>「忆海」领域内的层数上限</td></tr>
+</table>
+
+<h3>8.3 遗忘系统 <code>[oblivion]</code></h3>
+<table>
+  <tr><th>键</th><th>默认</th><th>说明</th></tr>
+  <tr><td><code>forgetSeconds</code></td><td>6</td><td>Tier 1「遗忘」的基础持续时间（现在只有遗忘诅咒的领域在用）</td></tr>
+  <tr><td><code>amnesiaSeconds</code></td><td>4</td><td>「失忆」基础持续时间</td></tr>
+  <tr><td><code>bossImmunity</code></td><td>true</td><td>BOSS 是否免疫「剥夺」</td></tr>
+  <tr><td><code>bossAttackReduction</code></td><td>0.20</td><td>BOSS 免疫时的攻击力削减（−20%）</td></tr>
+</table>
+
+<h3>8.4 忆魇 <code>[wraith]</code></h3>
+<table>
+  <tr><th>键</th><th>默认</th><th>说明</th></tr>
+  <tr><td><code>maxHealth</code></td><td>100</td><td>最大生命值（改这个需要重启）</td></tr>
+  <tr><td><code>neutral</code></td><td>true</td><td>是否中立（不主动攻击，被打才反击）</td></tr>
+  <tr><td><code>onlyMemoryDamage</code></td><td>true</td><td>是否只受忆海法术的满额伤害</td></tr>
+  <tr><td><code>universalDamageCap</code></td><td>1.0</td><td>非忆海来源的伤害硬上限（固定 1 点）</td></tr>
+  <tr><td><code>followRange</code></td><td>32.0</td><td>跟随范围（格）</td></tr>
+</table>
+
+<h3>8.5 全局平衡 <code>[balance]</code></h3>
+<table>
+  <tr><th>键</th><th>默认</th><th>说明</th></tr>
+  <tr><td><code>dejaVuBasePotency</code></td><td>0.40</td><td>「既视感」基础重演威力</td></tr>
+  <tr><td><code>dejaVuPerStackPenalty</code></td><td>0.05</td><td>记忆库每多一个法术，重演威力 −5%</td></tr>
+  <tr><td><code>encodePainBaseRefund</code></td><td>0.50</td><td>「痛忆」释放时的返还比例</td></tr>
+  <tr><td><code>thousandTrueDamagePct</code></td><td>0.15</td><td>「千忆归一」中真实伤害（无视一切减免）的占比</td></tr>
+  <tr><td><code>thousandElementalDoTPct</code></td><td>0.30</td><td>「千忆归一」中元素 <b>DoT</b> 的占比（2 秒 4 跳；元素状态只是表现）</td></tr>
+</table>
+
+<h3>8.6 法术与世界生成</h3>
+<table>
+  <tr><th>键</th><th>默认</th><th>说明</th></tr>
+  <tr><td><code>spells.spellMemoryPower</code></td><td>0.70</td><td>记忆释放的威力系数（当前用于走马灯 / 既视感）</td></tr>
+  <tr><td><code>spells.painMemoryCapPercent</code></td><td>0.60</td><td>痛忆伤害的封顶比例</td></tr>
+  <tr><td><code>worldgen.ruinSpacing</code></td><td>64</td><td>遗迹平均间距（区块）</td></tr>
+  <tr><td><code>worldgen.ruinSeparation</code></td><td>40</td><td>遗迹最小间距（区块）</td></tr>
+  <tr><td><code>loot.legendaryWeight</code></td><td>0.02</td><td>忆碑抽到传说法术的权重</td></tr>
+</table>
+
+<div class="note info">
+  <b>为什么有"配置项在代码里没被用到"这种事值得担心？</b>
+  本项目有一条规矩：<b>死配置比没有配置更糟</b> ——
+  玩家改了开关没反应，会以为模组坏了。
+  所以每个配置项都必须有真实消费者；上一版里忆格 HUD 的四个配置项（<code>hud.enabled</code> 等）
+  在 HUD 被删除后就变成了死配置，已经整节删掉。
+</div>
+
+<!-- ============ FAQ ============ -->
+<h2 id="faq"><span class="n">09</span>常见问题</h2>
+
+<div class="card">
+  <h3 style="margin-top:0">为什么我放了法术什么都没发生？</h3>
+  <p style="margin:0">先看<b>动作栏</b>（物品栏上方那一行）。忆海现在会在失败时明确告诉你原因：</p>
+  <ul style="margin:8px 0 0">
+    <li><b>没有可作用的目标</b> —— 你对着空气施法了，或者目标超出射程。遗忘系射程 20 格，写入系只有 8 格。</li>
+    <li><b>忆格已满，无法写入</b> —— 写入类法术（铭忆 / 质忆）需要空忆格。用「忆格扩张」或铭忆本身给自己腾地方。</li>
+    <li><b>目标免疫「剥夺」</b> —— 那是 BOSS，遗忘对它无效，但会改成 −20% 攻击力的削弱。</li>
+  </ul>
+</div>
+
+<div class="card">
+  <h3 style="margin-top:0">忆格在哪里看？为什么没有界面？</h3>
+  <p style="margin:0">忆海<b>刻意没有常驻界面</b>。忆格状态有两个查看渠道：</p>
+  <ul style="margin:8px 0 0">
+    <li><b>右上角的药水效果图标</b> —— 会显示「忆格共鸣」「忆格负担」「临时忆格」三个，
+        层数就是对应的数量。见 <a href="#engram">§2.5</a>。</li>
+    <li><b>动作栏提示</b> —— 忆格发生变化时提示一次 <code>忆格 N / M</code>。</li>
+    <li><b><code>/mnemosyne engrams</code></b> —— 看每一格里具体装了什么。</li>
+  </ul>
+  <p style="margin:8px 0 0;color:var(--t2)">理由：记忆是稀缺资源，需要一个"主动管理"的感觉。
+  常驻的血条式 UI 会让人把它当成"资源条"而不是"记忆"。</p>
+</div>
+
+<div class="card">
+  <h3 style="margin-top:0">喝牛奶会把我的忆格清掉吗？</h3>
+  <p style="margin:0"><b>不会。</b> 牛奶只会清掉那三个状态效果图标 ——
+  它们只是从忆格数据算出来的缓存，一秒内会自动重新出现。记忆内容本身存在你的存档里，不受影响。</p>
+</div>
+
+<div class="card">
+  <h3 style="margin-top:0">记忆到期了怎么没提醒我？</h3>
+  <p style="margin:0">会提醒的 —— 记忆腐坏时会有一条动作栏提示 + <code>hud.engram.fill</code> 音效。
+  但如果你在忙别的没注意，可能就错过了。120 秒不算长 —— 记忆占着忆格会提供共鸣加成（法术强度），但到期就没了，注意节奏。</p>
+</div>
+
+<div class="card">
+  <h3 style="margin-top:0">为什么我对监守者用遗忘没效果？</h3>
+  <p style="margin:0">已知限制。监守者、山羊、猪灵等 6 种生物走原版的 <code>Brain</code> 系统而不是
+  goal 系统，遗忘移除不了它们的行为。不会报错，也不会生效。</p>
+</div>
+
+<div class="card">
+  <h3 style="margin-top:0">法术的音效为什么和 ISS 官方一样？</h3>
+  <p style="margin:0">忆海<b>全部复用 ISS 的音频资源</b>，不自带任何 <code>.ogg</code> 文件。
+  这是因为 ISS 采用 All Rights Reserved 授权，我们不能把它的音频打包进自己的模组。
+  引用它的音效路径是允许的，复制文件不是。</p>
+</div>
+
+<div class="card">
+  <h3 style="margin-top:0">怎么快速试完所有法术？</h3>
+  <p style="margin:0">
+    <code>/mnemosyne unlock</code> → <code>/give @s irons_spellbooks:spell_book</code> →
+    抄写台抄进忆海卷轴（或直接创造模式拿忆海卷轴）。或者开创造模式，用忆海标签页里的物品。
+  </p>
+</div>
+
+<footer>
+  <b>忆海 Mnemosyne</b> · 记忆 · 认知学派<br>
+  MC 1.20.1 / Forge 47.4.0 / Iron's Spells 'n Spellbooks 3.16.3<br>
+  本文档中的全部数值、id 与配方均从模组源码中提取，未凭记忆填写。<br>
+  数据来源：<code>ModSpells</code> / <code>ModItems</code> / <code>ModBlocks</code> / <code>ModEntities</code> /
+  <code>Config</code> / <code>lang/zh_cn.json</code> / <code>data/mnemosyne/recipes</code> / 各法术类常量。
+</footer>
+
+</div>
+</body>
+</html>

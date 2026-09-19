@@ -1,0 +1,46 @@
+{
+  "name": "mnemosyne:memory_ruin/surface_pool",
+  "fallback": "minecraft:empty",
+  "elements": [
+    {
+      "weight": 8,
+      "element": {
+        "location": "mnemosyne:memory_ruin/surface/broken_column",
+        "processors": "mnemosyne:memory_ruin_randomization",
+        "projection": "rigid",
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "beard_thin"
+      }
+    },
+    {
+      "weight": 4,
+      "element": {
+        "location": "mnemosyne:memory_ruin/surface/fallen_arch",
+        "processors": "mnemosyne:memory_ruin_randomization",
+        "projection": "rigid",
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "beard_thin"
+      }
+    },
+    {
+      "weight": 4,
+      "element": {
+        "location": "mnemosyne:memory_ruin/surface/collapsed_wall",
+        "processors": "mnemosyne:memory_ruin_randomization",
+        "projection": "rigid",
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "beard_thin"
+      }
+    },
+    {
+      "weight": 2,
+      "element": {
+        "location": "mnemosyne:memory_ruin/surface/rune_plaza",
+        "processors": "mnemosyne:memory_ruin_randomization",
+        "projection": "rigid",
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "beard_thin"
+      }
+    }
+  ]
+}

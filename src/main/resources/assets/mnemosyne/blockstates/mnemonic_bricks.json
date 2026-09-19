@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "mnemosyne:block/mnemonic_bricks"
+    }
+  }
+}

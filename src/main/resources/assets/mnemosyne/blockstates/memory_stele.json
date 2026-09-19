@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "half=lower,read=false": {
+      "model": "mnemosyne:block/memory_stele"
+    },
+    "half=lower,read=true": {
+      "model": "mnemosyne:block/memory_stele"
+    },
+    "half=upper,read=false": {
+      "model": "mnemosyne:block/memory_stele"
+    },
+    "half=upper,read=true": {
+      "model": "mnemosyne:block/memory_stele"
+    }
+  }
+}

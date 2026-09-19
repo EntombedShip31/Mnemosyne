@@ -1,0 +1,56 @@
+{
+  "name": "mnemosyne:memory_ruin/decoration_pool",
+  "fallback": "minecraft:empty",
+  "elements": [
+    {
+      "weight": 8,
+      "element": {
+        "location": "mnemosyne:memory_ruin/decoration/bookshelf_ruined",
+        "processors": "mnemosyne:memory_ruin_randomization",
+        "projection": "rigid",
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "none"
+      }
+    },
+    {
+      "weight": 8,
+      "element": {
+        "location": "mnemosyne:memory_ruin/decoration/decayed_pot",
+        "processors": "mnemosyne:memory_ruin_randomization",
+        "projection": "rigid",
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "none"
+      }
+    },
+    {
+      "weight": 4,
+      "element": {
+        "location": "mnemosyne:memory_ruin/decoration/memory_crystal_cluster",
+        "processors": "mnemosyne:memory_ruin_randomization",
+        "projection": "rigid",
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "none"
+      }
+    },
+    {
+      "weight": 4,
+      "element": {
+        "location": "mnemosyne:memory_ruin/decoration/broken_stele",
+        "processors": "mnemosyne:memory_ruin_randomization",
+        "projection": "rigid",
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "none"
+      }
+    },
+    {
+      "weight": 4,
+      "element": {
+        "location": "mnemosyne:memory_ruin/decoration/collapsed_pillar",
+        "processors": "mnemosyne:memory_ruin_randomization",
+        "projection": "rigid",
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "none"
+      }
+    }
+  ]
+}

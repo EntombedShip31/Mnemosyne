@@ -1,0 +1,216 @@
+plugins {
+    id 'net.minecraftforge.gradle' version '[6.0,6.2)'
+}
+
+version = mod_version
+group = mod_group_id
+// Forge requires the jar file name to be ASCII (non-ASCII crashes the game on startup).
+// The Chinese display name lives in mods.toml's displayName instead.
+base {
+    archivesName = "mnemosyne"
+}
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+
+minecraft {
+    mappings channel: mapping_channel, version: mapping_version
+    copyIdeResources = true
+
+    // ⭐⭐ 依赖模组的 Mixin refmap 重映射（2026-09-17 实测，缺了它 runClient / runServer 必崩）
+    //
+    // 症状（runServer，启动 3 秒后）：
+    //   Mixin apply failed mixins.irons_spellbooks.json:EntityMixin -> net.minecraft.world.entity.Entity:
+    //   InvalidInjectionException Critical injection failure: @Inject annotation on isAlliedTo
+    //   could not find any targets matching
+    //   'Lnet/minecraft/world/entity/Entity;m_7307_(Lnet/minecraft/world/entity/Entity;)Z'
+    //
+    // 根因链（全部字节码实测，不是猜的）：
+    //   1. 依赖 jar（ISS / irons_lib / curios / geckolib）里的 *.refmap.json 存的是 **SRG 名**
+    //      （如 `isAlliedTo(...)Z` → `Lnet/minecraft/world/entity/Entity;m_7307_(...)Z`）。
+    //      实测：`irons_spellbooks.refmap.json` / `irons_lib.refmap.json` / `curios.refmap.json`
+    //      / `geckolib.refmap.json` **四个全都是 SRG**，这是正常状态，不是它们有问题。
+    //   2. 但开发环境用的是 `official` 映射 → 运行时 `Entity` 里的方法叫 `isAlliedTo`，**不叫 `m_7307_`**。
+    //   3. Mixin 本来能自己重映射，但 `RemappingReferenceMapper.of(env, mapper)` 的前置条件是
+    //      `hasData(env)`：即 `getResource(env)` 指向的**文件必须存在**。
+    //      `getResource` 读的是 `Option.REFMAP_REMAP_RESOURCE`，缺省回落到系统属性
+    //      `net.minecraftforge.gradle.GradleStart.srg.srg-mcp`（FG2/3 时代的遗留名）。
+    //   4. **ForgeGradle 6.0.54 整个插件里没有任何 refmap 相关代码**
+    //      （扫描全 jar：`refmap` / `RefMap` / `IReferenceMapper` 命中 0 个类），
+    //      Forge 本体（universal + fmlloader）也一个都没有 → 没人给这个属性赋值
+    //      → Mixin 拿到裸 SRG 名 → 找不到目标 → 崩。
+    //
+    // 修复 = 显式给这两个系统属性赋值。属性名不是拼出来的字面量，而是
+    // `"mixin." + 分组 + "." + 选项名`（`MixinEnvironment$Option` 的常量池里
+    // `mixin` / `env` / `remapRefMap` / `refMapRemappingFile` 是分开的 Utf8），
+    // 所以按字面量搜 jar 是搜不到的 —— 这也是它容易被漏掉的原因。
+    //   REFMAP_REMAP          → mixin.env.remapRefMap
+    //   REFMAP_REMAP_RESOURCE → mixin.env.refMapRemappingFile
+    //   （REFMAP_REMAP_SOURCE_ENV 缺省 "searge"，正好等于 refmap 里的名字空间，不用设）
+    //
+    // `build/createSrgToMcp/output.srg` 就是 SRG → official 的映射表，
+    // 实测里面有：`MD: net/minecraft/world/entity/Entity/m_7307_ (…)Z
+    //                    net/minecraft/world/entity/Entity/isAlliedTo (…)Z` ✅
+    //
+    // 注意：这是**开发环境专有**问题。生产环境 Forge 跑的是 SRG 名，refmap 原样就对，
+    // 所以不要把它当成"ISS 的 bug"，也不要改依赖版本。
+    def refmapArgs = [
+            'mixin.env.remapRefMap'         : 'true',
+            'mixin.env.refMapRemappingFile' : "${project.buildDir}/createSrgToMcp/output.srg".replace('\\', '/'),
+    ]
+
+    runs {
+        client {
+            workingDirectory project.file('run')
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+            property 'forge.enabledGameTestNamespaces', mod_id
+            refmapArgs.each { k, v -> property k, v }
+            mods {
+                "${mod_id}" {
+                    source sourceSets.main
+                }
+            }
+        }
+        server {
+            workingDirectory project.file('run-server')
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+            property 'forge.enabledGameTestNamespaces', mod_id
+            refmapArgs.each { k, v -> property k, v }
+            mods {
+                "${mod_id}" {
+                    source sourceSets.main
+                }
+            }
+        }
+        data {
+            workingDirectory project.file('run-data')
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+            args '--mod', mod_id, '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+            mods {
+                "${mod_id}" {
+                    source sourceSets.main
+                }
+            }
+        }
+    }
+}
+
+sourceSets.main.resources { srcDir 'src/generated/resources' }
+
+repositories {
+    maven { name = "Iron's Maven - Release"; url = "https://code.redspace.io/releases" }
+    maven { name = "Iron's Maven - Snapshots"; url = "https://code.redspace.io/snapshots" }
+    maven { name = "TheIllusiveC4 Maven"; url = "https://maven.theillusivec4.top" }
+    maven { name = "Kosmos Maven"; url = "https://maven.kosmx.dev/" }
+    maven { name = "GeckoLib Maven"; url = "https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/" }
+}
+
+dependencies {
+    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+
+    // ---------- ISS (Iron's Spells 'n Spellbooks) ----------
+    // ⚠️ 编译期必须用「完整 jar」，不能用 :api 分类器。
+    //
+    // 实测（2026-09-15，Phase 2）：
+    //   :api jar 里缺 io.redspace.ironsspellbooks.damage.SpellDamageSource，
+    //   而 AbstractSpell.getDamageSource(Entity) 的返回类型正是它。
+    //   用 :api 会得到：
+    //     错误: 无法访问SpellDamageSource
+    //     找不到 io.redspace.ironsspellbooks.damage.SpellDamageSource 的类文件
+    //   → 任何要造成伤害的法术都编译不过，而 docs/tech/02 §3.5 又强制要求
+    //     伤害必须走 getDamageSource()（否则目标的学派抗性完全不起作用）。
+    //   详见 docs/tech/00_技术总览.md §八。
+    //
+    // 仍然是 compileOnly：ISS 不会被打进我们的 jar，没有再分发风险。
+    // ⚠️ 纪律：只准 import io.redspace.ironsspellbooks.api.* 与
+    //         io.redspace.ironsspellbooks.damage.SpellDamageSource。
+    //         其他包（item./capabilities./spells./entity./block.）一律不准用 —— 它们版本脆弱。
+    compileOnly fg.deobf("io.redspace:irons_spellbooks:${irons_spells_version}")
+    // Full mod, runtime only (never bundled into our jar)
+    runtimeOnly fg.deobf("io.redspace:irons_spellbooks:${irons_spells_version}")
+
+    // ---------- Curios API (spell book slot) ----------
+    // Version must satisfy ISS's own requirement: curios [5.14.1+1.20.1,)
+    implementation fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}:api")
+    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}")
+
+    // ---------- irons_lib (ISS's mandatory library prerequisite) ----------
+    // ISS 1.20.1-3.16.3 declares irons_lib [1.20.1-2,1.20.1-3) in its mods.toml.
+    // Runtime only: the ISS :api jar contains no reference to io.redspace.irons_lib.*
+    // (verified with javap/grep over the api jar), so we never compile against it.
+    runtimeOnly fg.deobf("io.redspace:irons_lib:${irons_lib_version}")
+
+    // ---------- ISS runtime prerequisites (dev environment crashes without them) ----------
+    runtimeOnly fg.deobf("software.bernie.geckolib:geckolib-forge-${geckolib_version}")
+    implementation fg.deobf("dev.kosmx.player-anim:player-animation-lib-forge:${player_animator_version}")
+    compileOnly fg.deobf("top.theillusivec4.caelus:caelus-forge:${caelus_version}:api")
+    runtimeOnly fg.deobf("top.theillusivec4.caelus:caelus-forge:${caelus_version}")
+}
+
+def resourceTargets = ['META-INF/mods.toml', 'pack.mcmeta']
+def replaceProperties = [
+        minecraft_version   : minecraft_version,
+        minecraft_version_range: minecraft_version_range,
+        forge_version       : forge_version,
+        forge_version_range : forge_version_range,
+        loader_version_range: loader_version_range,
+        mod_id              : mod_id,
+        mod_name            : mod_name,
+        mod_version         : mod_version,
+        mod_authors         : mod_authors,
+        mod_license         : mod_license,
+        mod_issue_tracker   : mod_issue_tracker
+]
+processResources {
+    inputs.properties replaceProperties
+    filesMatching(resourceTargets) { expand replaceProperties }
+    filesMatching('*.mixins.json') { expand replaceProperties }
+}
+
+jar {
+    manifest {
+        attributes([
+                'Specification-Title'     : project.base.archivesName.get(),
+                'Specification-Vendor'    : mod_authors,
+                'Specification-Version'   : '1',
+                'Implementation-Title'    : project.base.archivesName.get(),
+                'Implementation-Version'  : project.jar.archiveVersion,
+                'Implementation-Vendor'   : mod_authors,
+                'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+        ])
+    }
+}
+
+jar.finalizedBy('reobfJar')
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+// Copy the mod jar to a Minecraft mods directory (defaults to the PCL2 1.20.1-Forge instance).
+// Override with: ./gradlew build -Ppcl2_mods_dir=D:/some/mods
+ext.installPath = (project.findProperty('pcl2_mods_dir') ?: 'D:/PCL2/.minecraft/versions/1.20.1-Forge_47.4.10/mods').toString()
+
+tasks.register('copyToMinecraftMods') {
+    group = 'distribution'
+    description = 'Copy the built mod jar to the configured Minecraft mods directory.'
+    dependsOn reobfJar
+    doLast {
+        def src = file("build/libs/${project.base.archivesName.get()}-${mod_version}.jar")
+        if (src.exists()) {
+            copy {
+                from src
+                into installPath
+            }
+            logger.lifecycle("Copied ${src.name} -> ${installPath}")
+        } else {
+            logger.warn("Source jar not found: ${src}")
+        }
+    }
+}
+
+tasks.named('build').configure {
+    dependsOn copyToMinecraftMods
+}

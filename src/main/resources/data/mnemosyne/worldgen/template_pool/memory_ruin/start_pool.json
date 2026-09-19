@@ -1,0 +1,16 @@
+{
+  "name": "mnemosyne:memory_ruin/start_pool",
+  "fallback": "minecraft:empty",
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+        "location": "mnemosyne:memory_ruin/ruin_main",
+        "processors": "mnemosyne:memory_ruin_randomization",
+        "projection": "rigid",
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "beard_thin"
+      }
+    }
+  ]
+}

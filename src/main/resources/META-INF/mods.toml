@@ -1,0 +1,53 @@
+modLoader="javafml"
+loaderVersion="${loader_version_range}"
+license="${mod_license}"
+issueTrackerURL="${mod_issue_tracker}"
+
+[[mods]]
+modId="${mod_id}"
+version="${mod_version}"
+displayName="忆海 · Mnemosyne"
+authors="${mod_authors}"
+logoFile="icon.png"
+logoBlur=false
+description='''
+§b§l忆海 §8v${mod_version}
+§7Iron's Spells 'n Spellbooks（铁魔法）附属模组 —— 记忆·认知流派。
+
+§a■ §e忆格§7：以记忆碎片承载法术，容量有限，取舍即策略
+§a■ §e遗忘§7：从怪物身上抹去记忆，掠夺其能力为己用
+§a■ §e忆者遗迹§7：世界各处沉睡着被遗忘的档案馆与记忆碑
+§a■ §e16 个法术§7：从低阶的忆矢，到足以抹去一切的千忆归一
+
+§6踏入忆海，代价是被遗忘。
+'''
+
+[[dependencies.${mod_id}]]
+    modId="forge"
+    mandatory=true
+    versionRange="${forge_version_range}"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.${mod_id}]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="${minecraft_version_range}"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.${mod_id}]]
+    modId="irons_spellbooks"
+    mandatory=true
+    # Requires 3.15.0+ (the 1.20.1 branch adopted the Mutable/Immutable spell container API there)
+    versionRange="[1.20.1-3.15.0,)"
+    ordering="AFTER"
+    side="BOTH"
+
+[[dependencies.${mod_id}]]
+    modId="curios"
+    mandatory=true
+    # ISS 1.20.1-3.16.3 itself requires curios [5.14.1+1.20.1,) (verified from its mods.toml at runtime).
+    versionRange="[5.14.1,)"
+    ordering="AFTER"
+    side="BOTH"

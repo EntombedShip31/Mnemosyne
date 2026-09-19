@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "mnemosyne:block/memory_crystal_cluster"
+    }
+  }
+}

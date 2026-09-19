@@ -1,0 +1,36 @@
+{
+  "name": "mnemosyne:memory_ruin/stair_pool",
+  "fallback": "mnemosyne:memory_ruin/chamber_fallback",
+  "elements": [
+    {
+      "weight": 4,
+      "element": {
+        "location": "mnemosyne:memory_ruin/stair/staircase",
+        "processors": "mnemosyne:memory_ruin_randomization",
+        "projection": "rigid",
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
+      }
+    },
+    {
+      "weight": 2,
+      "element": {
+        "location": "mnemosyne:memory_ruin/stair/staircase_cracked",
+        "processors": "mnemosyne:memory_ruin_randomization",
+        "projection": "rigid",
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "mnemosyne:memory_ruin/stair/staircase_collapsed",
+        "processors": "mnemosyne:memory_ruin_randomization",
+        "projection": "rigid",
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
+      }
+    }
+  ]
+}

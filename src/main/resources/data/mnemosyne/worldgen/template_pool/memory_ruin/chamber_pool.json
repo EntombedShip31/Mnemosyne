@@ -1,0 +1,96 @@
+{
+  "name": "mnemosyne:memory_ruin/chamber_pool",
+  "fallback": "mnemosyne:memory_ruin/chamber_fallback",
+  "elements": [
+    {
+      "weight": 8,
+      "element": {
+        "location": "mnemosyne:memory_ruin/chamber/corridor",
+        "processors": "mnemosyne:memory_ruin_randomization",
+        "projection": "rigid",
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
+      }
+    },
+    {
+      "weight": 8,
+      "element": {
+        "location": "mnemosyne:memory_ruin/chamber/rubble_dead_end",
+        "processors": "mnemosyne:memory_ruin_randomization",
+        "projection": "rigid",
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
+      }
+    },
+    {
+      "weight": 4,
+      "element": {
+        "location": "mnemosyne:memory_ruin/chamber/junction",
+        "processors": "mnemosyne:memory_ruin_randomization",
+        "projection": "rigid",
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
+      }
+    },
+    {
+      "weight": 4,
+      "element": {
+        "location": "mnemosyne:memory_ruin/chamber/bookshelf_gallery",
+        "processors": "mnemosyne:memory_ruin_randomization",
+        "projection": "rigid",
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
+      }
+    },
+    {
+      "weight": 4,
+      "element": {
+        "location": "mnemosyne:memory_ruin/chamber/archive_vault",
+        "processors": "mnemosyne:memory_ruin_randomization",
+        "projection": "rigid",
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
+      }
+    },
+    {
+      "weight": 4,
+      "element": {
+        "location": "mnemosyne:memory_ruin/chamber/burial_alcove",
+        "processors": "mnemosyne:memory_ruin_randomization",
+        "projection": "rigid",
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
+      }
+    },
+    {
+      "weight": 4,
+      "element": {
+        "location": "mnemosyne:memory_ruin/chamber/cracked_wall_opening",
+        "processors": "mnemosyne:memory_ruin_randomization",
+        "projection": "rigid",
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
+      }
+    },
+    {
+      "weight": 2,
+      "element": {
+        "location": "mnemosyne:memory_ruin/chamber/statue_pass",
+        "processors": "mnemosyne:memory_ruin_randomization",
+        "projection": "rigid",
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "mnemosyne:memory_ruin/chamber/mnemonic_core",
+        "processors": "mnemosyne:memory_ruin_randomization",
+        "projection": "rigid",
+        "element_type": "irons_spellbooks:individual_terrain_element",
+        "terrain_adjustment": "bury"
+      }
+    }
+  ]
+}

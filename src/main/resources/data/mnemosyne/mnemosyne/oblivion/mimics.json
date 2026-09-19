@@ -1,0 +1,26 @@
+{
+  "__comment": "表 C · 可复现的技能（docs/02 §四 表 C，供「走马灯」/「记忆掠夺」使用）。replace=false → 与代码内建表合并；true → 完全以本文件为准。值是**真实的铁魔法法术 id**（已逐个核对 ISS jar 内 lang 键），不是自造 id。末影龙 / 凋灵刻意不在表里 —— 设计上不可复现。",
+  "replace": false,
+  "mimics": {
+    "minecraft:blaze": ["irons_spellbooks:firebolt"],
+    "minecraft:ghast": ["irons_spellbooks:fireball"],
+    "minecraft:enderman": ["irons_spellbooks:teleport"],
+    "minecraft:witch": ["irons_spellbooks:poison_splash"],
+    "minecraft:skeleton": ["irons_spellbooks:magic_arrow"],
+    "minecraft:stray": ["irons_spellbooks:magic_arrow"],
+    "minecraft:shulker": ["irons_spellbooks:magic_missile"],
+    "minecraft:evoker": ["irons_spellbooks:fang_strike"],
+    "minecraft:illusioner": ["irons_spellbooks:invisibility"],
+    "minecraft:guardian": ["irons_spellbooks:ray_of_frost"],
+    "minecraft:elder_guardian": ["irons_spellbooks:ray_of_frost"],
+    "minecraft:snow_golem": ["irons_spellbooks:snowball"],
+    "minecraft:magma_cube": ["irons_spellbooks:ascension"],
+    "minecraft:phantom": ["irons_spellbooks:charge"],
+    "minecraft:drowned": ["irons_spellbooks:throw"],
+    "minecraft:pillager": ["irons_spellbooks:arrow_volley"],
+    "minecraft:piglin": ["irons_spellbooks:arrow_volley"],
+    "minecraft:hoglin": ["irons_spellbooks:charge"],
+    "minecraft:goat": ["irons_spellbooks:charge"],
+    "minecraft:warden": ["irons_spellbooks:sonic_boom"]
+  }
+}

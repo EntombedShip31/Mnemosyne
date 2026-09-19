@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    { "item": "mnemosyne:faded_page" },
+    { "item": "mnemosyne:faded_page" },
+    { "item": "minecraft:ink_sac" }
+  ],
+  "result": { "item": "mnemosyne:mnemonic_ink" }
+}

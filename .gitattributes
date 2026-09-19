@@ -1,0 +1,16 @@
+# 行尾规范化：仓库内统一存 LF，检出时按各平台习惯转换。
+* text=auto
+
+# gradlew 是 shell 脚本，Windows 上若被转成 CRLF 会报
+# "/bin/sh^M: bad interpreter"，必须强制 LF。
+gradlew        text eol=lf
+*.sh           text eol=lf
+
+# Windows 批处理反过来，必须 CRLF。
+*.bat          text eol=crlf
+
+# 二进制，任何情况下都不要动。
+*.jar          binary
+*.png          binary
+*.nbt          binary
+*.ogg          binary

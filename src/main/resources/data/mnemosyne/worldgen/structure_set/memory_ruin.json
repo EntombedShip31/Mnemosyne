@@ -1,0 +1,14 @@
+{
+  "structures": [
+    {
+      "structure": "mnemosyne:memory_ruin",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "salt": 1852304719,
+    "spacing": 64,
+    "separation": 40,
+    "type": "minecraft:random_spread"
+  }
+}

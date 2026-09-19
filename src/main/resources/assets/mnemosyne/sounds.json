@@ -1,0 +1,431 @@
+{
+  "block.memory_stele.activate": {
+    "subtitle": "subtitles.mnemosyne.block.memory_stele",
+    "sounds": [
+      {
+        "name": "irons_spellbooks:vault/activate",
+        "volume": 0.8,
+        "pitch": 0.9
+      }
+    ]
+  },
+  "block.memory_stele.exhausted": {
+    "sounds": [
+      {
+        "name": "irons_spellbooks:vault/deactivate",
+        "volume": 0.6,
+        "pitch": 0.9
+      }
+    ]
+  },
+  "cast.default": {
+    "subtitle": "subtitles.mnemosyne.cast",
+    "sounds": [
+      {
+        "name": "irons_spellbooks:generic/ender_cast",
+        "volume": 0.85,
+        "pitch": 0.95
+      }
+    ]
+  },
+  "cast.long": {
+    "subtitle": "subtitles.mnemosyne.cast_long",
+    "sounds": [
+      {
+        "name": "irons_spellbooks:charge_chains",
+        "volume": 0.7,
+        "pitch": 0.9
+      }
+    ]
+  },
+  "cast.prepare": {
+    "subtitle": "subtitles.mnemosyne.cast_prepare",
+    "sounds": [
+      {
+        "name": "irons_spellbooks:eldritch_prepare",
+        "volume": 0.8,
+        "pitch": 1.05
+      }
+    ]
+  },
+  "equip.robe": {
+    "sounds": [
+      {
+        "name": "irons_spellbooks:equip_spell_book_1",
+        "volume": 0.8,
+        "pitch": 1.1
+      }
+    ]
+  },
+  "hud.engram.decay": {
+    "subtitle": "subtitles.mnemosyne.hud.engram_decay",
+    "sounds": [
+      {
+        "name": "irons_spellbooks:misc_freezing_03",
+        "volume": 0.4,
+        "pitch": 1.3
+      }
+    ]
+  },
+  "hud.engram.fill": {
+    "sounds": [
+      {
+        "name": "irons_spellbooks:ui_tick",
+        "volume": 0.5,
+        "pitch": 1.4
+      }
+    ]
+  },
+  "hud.resonance": {
+    "sounds": [
+      {
+        "name": "irons_spellbooks:echoing_strike",
+        "volume": 0.45,
+        "pitch": 1.5
+      }
+    ]
+  },
+  "music.memory_ruin": {
+    "sounds": [
+      {
+        "name": "irons_spellbooks:music/music_disc_flame_still_burns",
+        "volume": 0.35,
+        "stream": true
+      }
+    ]
+  },
+  "music.memory_ruin_alt": {
+    "sounds": [
+      {
+        "name": "irons_spellbooks:music/music_disc_whispers_of_ice",
+        "volume": 0.3,
+        "stream": true
+      }
+    ]
+  },
+  "spell.amnesia.cast": {
+    "subtitle": "subtitles.mnemosyne.spell.amnesia",
+    "sounds": [
+      {
+        "name": "irons_spellbooks:charge_chains",
+        "volume": 0.85,
+        "pitch": 0.85
+      }
+    ]
+  },
+  "spell.cognitive_collapse.cast": {
+    "subtitle": "subtitles.mnemosyne.spell.cognitive_collapse",
+    "sounds": [
+      {
+        "name": "irons_spellbooks:gravity_fissure_charge",
+        "volume": 0.9,
+        "pitch": 1.0
+      }
+    ]
+  },
+  "spell.curse_of_oblivion.cast": {
+    "subtitle": "subtitles.mnemosyne.spell.curse_of_oblivion",
+    "sounds": [
+      {
+        "name": "irons_spellbooks:blight_start",
+        "volume": 0.85,
+        "pitch": 0.9
+      }
+    ]
+  },
+  "spell.deja_vu.cast": {
+    "subtitle": "subtitles.mnemosyne.spell.deja_vu",
+    "sounds": [
+      {
+        "name": "irons_spellbooks:magic_spell_reverse_3",
+        "volume": 0.95,
+        "pitch": 1.1
+      }
+    ]
+  },
+  "spell.encode_pain.cast": {
+    "subtitle": "subtitles.mnemosyne.spell.encode",
+    "sounds": [
+      {
+        "name": "irons_spellbooks:dark_magic_buff_03_custom_1",
+        "volume": 0.7,
+        "pitch": 1.0
+      }
+    ]
+  },
+  "spell.encode_trait.cast": {
+    "subtitle": "subtitles.mnemosyne.spell.encode",
+    "sounds": [
+      {
+        "name": "irons_spellbooks:eldritch_prepare",
+        "volume": 0.75,
+        "pitch": 1.2
+      }
+    ]
+  },
+  "spell.engrave.cast": {
+    "subtitle": "subtitles.mnemosyne.spell.engrave",
+    "sounds": [
+      {
+        "name": "irons_spellbooks:generic/evocation_cast",
+        "volume": 0.9,
+        "pitch": 1.25
+      }
+    ]
+  },
+  "spell.expand_mind.cast": {
+    "subtitle": "subtitles.mnemosyne.spell.expand_mind",
+    "sounds": [
+      {
+        "name": "irons_spellbooks:ender_charge",
+        "volume": 0.8,
+        "pitch": 1.1
+      }
+    ]
+  },
+  "spell.glimpse.cast": {
+    "subtitle": "subtitles.mnemosyne.spell.glimpse",
+    "sounds": [
+      {
+        "name": "irons_spellbooks:planar_sight_cast",
+        "volume": 0.8,
+        "pitch": 1.1
+      }
+    ]
+  },
+  "spell.mass_amnesia.cast": {
+    "subtitle": "subtitles.mnemosyne.spell.mass_amnesia",
+    "sounds": [
+      {
+        "name": "irons_spellbooks:sonic_boom",
+        "volume": 1.0,
+        "pitch": 0.8
+      }
+    ]
+  },
+  "spell.endless_realm.cast": {
+    "subtitle": "subtitles.mnemosyne.spell.endless_realm",
+    "sounds": [
+      {
+        "name": "irons_spellbooks:black_hole_charge",
+        "volume": 0.9,
+        "pitch": 1.0
+      }
+    ]
+  },
+  "spell.adaptation.cast": {
+    "subtitle": "subtitles.mnemosyne.spell.adaptation",
+    "sounds": [
+      {
+        "name": "irons_spellbooks:dark_magic_buff_03_custom_1",
+        "volume": 0.7,
+        "pitch": 1.0
+      }
+    ]
+  },
+  "spell.oblation.cast": {
+    "subtitle": "subtitles.mnemosyne.spell.oblation",
+    "sounds": [
+      {
+        "name": "irons_spellbooks:ender_charge",
+        "volume": 0.8,
+        "pitch": 1.1
+      }
+    ]
+  },
+  "spell.retrograde.cast": {
+    "subtitle": "subtitles.mnemosyne.spell.retrograde",
+    "sounds": [
+      {
+        "name": "irons_spellbooks:planar_sight_cast",
+        "volume": 0.8,
+        "pitch": 1.1
+      }
+    ]
+  },
+  "spell.framebind.cast": {
+    "subtitle": "subtitles.mnemosyne.spell.framebind",
+    "sounds": [
+      {
+        "name": "irons_spellbooks:blight_start",
+        "volume": 0.85,
+        "pitch": 0.9
+      }
+    ]
+  },
+  "spell.memory_arrow.cast": {
+    "subtitle": "subtitles.mnemosyne.spell.memory_arrow",
+    "sounds": [
+      {
+        "name": "irons_spellbooks:magic_arrow_charge",
+        "volume": 0.7,
+        "pitch": 1.15
+      }
+    ]
+  },
+  "spell.memory_arrow.hit": {
+    "subtitle": "subtitles.mnemosyne.spell.memory_arrow_hit",
+    "sounds": [
+      {
+        "name": "irons_spellbooks:arcane_impact",
+        "volume": 0.9,
+        "pitch": 1.1
+      }
+    ]
+  },
+  "spell.memory_shard.cast": {
+    "subtitle": "subtitles.mnemosyne.spell.memory_shard",
+    "sounds": [
+      {
+        "name": "irons_spellbooks:gust_cast_1",
+        "volume": 0.8,
+        "pitch": 1.2
+      },
+      {
+        "name": "irons_spellbooks:gust_cast_2",
+        "volume": 0.8,
+        "pitch": 1.2
+      },
+      {
+        "name": "irons_spellbooks:gust_cast_3",
+        "volume": 0.8,
+        "pitch": 1.2
+      }
+    ]
+  },
+  "spell.memory_shard.hit": {
+    "subtitle": "subtitles.mnemosyne.spell.memory_shard_hit",
+    "sounds": [
+      {
+        "name": "irons_spellbooks:force_impact",
+        "volume": 0.8,
+        "pitch": 1.25
+      }
+    ]
+  },
+  "spell.memory_theft.charge": {
+    "subtitle": "subtitles.mnemosyne.spell.memory_theft",
+    "sounds": [
+      {
+        "name": "irons_spellbooks:ray_of_siphoning_loop",
+        "volume": 0.8,
+        "pitch": 1.0
+      }
+    ]
+  },
+  "spell.memory_theft.finish": {
+    "subtitle": "subtitles.mnemosyne.spell.memory_theft_finish",
+    "sounds": [
+      {
+        "name": "irons_spellbooks:soulcaller_toll_success",
+        "volume": 0.9,
+        "pitch": 1.15
+      }
+    ]
+  },
+  "spell.recollection.cast": {
+    "subtitle": "subtitles.mnemosyne.spell.recollection",
+    "sounds": [
+      {
+        "name": "irons_spellbooks:echoing_strikes_cast",
+        "volume": 0.85,
+        "pitch": 1.05
+      }
+    ]
+  },
+  "spell.sea_of_memory.charge": {
+    "subtitle": "subtitles.mnemosyne.spell.sea_of_memory",
+    "sounds": [
+      {
+        "name": "irons_spellbooks:black_hole_charge",
+        "volume": 0.9,
+        "pitch": 1.0
+      }
+    ]
+  },
+  "spell.sea_of_memory.end": {
+    "subtitle": "subtitles.mnemosyne.spell.sea_of_memory_end",
+    "sounds": [
+      {
+        "name": "irons_spellbooks:void_tentacles_cast",
+        "volume": 1.0,
+        "pitch": 0.85
+      }
+    ]
+  },
+  "spell.sea_of_memory.loop": {
+    "subtitle": "subtitles.mnemosyne.spell.sea_of_memory_loop",
+    "sounds": [
+      {
+        "name": "irons_spellbooks:earthquake_loop",
+        "volume": 0.45,
+        "pitch": 1.3
+      }
+    ]
+  },
+  "spell.thousand_memories.charge": {
+    "subtitle": "subtitles.mnemosyne.spell.thousand_memories",
+    "sounds": [
+      {
+        "name": "irons_spellbooks:divine_smite_cast",
+        "volume": 0.7,
+        "pitch": 0.9
+      }
+    ]
+  },
+  "spell.thousand_memories.hit": {
+    "subtitle": "subtitles.mnemosyne.spell.thousand_memories_hit",
+    "sounds": [
+      {
+        "name": "irons_spellbooks:echoing_strike",
+        "volume": 1.0,
+        "pitch": 0.95
+      }
+    ]
+  },
+  "spell.thousand_memories.release": {
+    "subtitle": "subtitles.mnemosyne.spell.thousand_memories_release",
+    "sounds": [
+      {
+        "name": "irons_spellbooks:heartstop_cast",
+        "volume": 1.0,
+        "pitch": 0.9
+      },
+      {
+        "name": "irons_spellbooks:void_tentacles_cast",
+        "volume": 0.9,
+        "pitch": 1.1
+      }
+    ]
+  },
+  "ui.learn": {
+    "subtitle": "subtitles.mnemosyne.ui.learn",
+    "sounds": [
+      {
+        "name": "irons_spellbooks:learn_eldritch_spell",
+        "volume": 0.8,
+        "pitch": 1.15
+      }
+    ]
+  },
+  "ui.locked_memory": {
+    "subtitle": "subtitles.mnemosyne.ui.locked_memory",
+    "sounds": [
+      {
+        "name": "irons_spellbooks:generic_trader_no_01",
+        "volume": 0.6,
+        "pitch": 0.9
+      }
+    ]
+  },
+  "ui.stele.read": {
+    "subtitle": "subtitles.mnemosyne.ui.stele_read",
+    "sounds": [
+      {
+        "name": "irons_spellbooks:learn_eldritch_spell",
+        "volume": 0.9,
+        "pitch": 1.0
+      }
+    ]
+  }
+}

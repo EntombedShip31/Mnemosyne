@@ -1,0 +1,10 @@
+{
+  "__comment": "BOSS 与精英怪判定表（docs/02 §三）。原版没有 BOSS 标签或注册表，这张表必须自建。bosses = 完全免疫剥夺、改走数值化削弱；elites = 遗忘持续时间减半（原版默认空 —— 宁可不少算，也不要用血量启发式误判铁傀儡这类高血量非精英怪）。",
+  "replace": false,
+  "bosses": [
+    "minecraft:ender_dragon",
+    "minecraft:wither",
+    "minecraft:warden"
+  ],
+  "elites": []
+}

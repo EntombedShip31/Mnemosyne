@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "mnemosyne:mnemonic_bricks",
+    "mnemosyne:mnemonic_bricks_cracked",
+    "mnemosyne:memory_stele"
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    { "item": "mnemosyne:memory_crystal" },
+    { "item": "minecraft:ink_sac" }
+  ],
+  "result": { "item": "mnemosyne:mnemonic_ink", "count": 2 }
+}

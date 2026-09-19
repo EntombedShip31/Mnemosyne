@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>忆海 Mnemosyne · 游戏内验收清单</title>
+<style>
+  :root{
+    --indigo:#534AB7; --magenta:#D4537E;
+    --bg:#FAFAF8; --card:#FFFFFF; --line:#E6E4DE;
+    --t1:#26251F; --t2:#6B6A62; --t3:#9A988F;
+    --ok:#3B6D11; --okbg:#EAF3DE; --warn:#854F0B; --warnbg:#FAEEDA;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--t1);
+    font:15px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;}
+  .wrap{max-width:900px;margin:0 auto;padding:40px 24px 80px}
+  header{border-bottom:2px solid var(--indigo);padding-bottom:20px;margin-bottom:8px}
+  h1{font-size:24px;font-weight:600;margin:0 0 6px}
+  .sub{color:var(--t2);font-size:14px;margin:0}
+  .meta{color:var(--t3);font-size:13px;margin:10px 0 0}
+  .bar{display:flex;align-items:center;gap:12px;margin:24px 0 32px;
+    background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 18px}
+  .track{flex:1;height:8px;background:#EFEDE7;border-radius:4px;overflow:hidden}
+  .fill{height:100%;width:0;background:var(--indigo);transition:width .25s}
+  .count{font-variant-numeric:tabular-nums;font-weight:600;color:var(--indigo);white-space:nowrap}
+  h2{font-size:17px;font-weight:600;margin:36px 0 4px;display:flex;align-items:center;gap:10px}
+  h2 .num{display:inline-flex;align-items:center;justify-content:center;
+    width:26px;height:26px;border-radius:7px;background:var(--indigo);color:#fff;
+    font-size:13px;font-weight:600;flex:none}
+  .why{color:var(--t2);font-size:13.5px;margin:6px 0 14px}
+  .item{background:var(--card);border:1px solid var(--line);border-radius:10px;
+    padding:14px 16px;margin-bottom:10px;display:flex;gap:12px;align-items:flex-start}
+  .item.done{background:#F6FAF0;border-color:#C0DD97}
+  .item input{width:17px;height:17px;margin:3px 0 0;accent-color:var(--indigo);flex:none;cursor:pointer}
+  .body{flex:1;min-width:0}
+  .title{font-weight:500}
+  .item.done .title{color:var(--t2);text-decoration:line-through}
+  .exp{color:var(--t2);font-size:13.5px;margin-top:4px}
+  .cmd{position:relative;margin-top:10px;background:#F4F3EE;border:1px solid var(--line);
+    border-radius:7px;padding:9px 62px 9px 12px;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;
+    font-size:13px;color:#1F1E19;overflow-x:auto;white-space:pre}
+  .cmd button{position:absolute;right:6px;top:6px;font:500 12px/1 inherit;font-family:inherit;
+    background:#fff;border:1px solid #D8D6CE;border-radius:5px;padding:6px 9px;cursor:pointer;color:var(--t2)}
+  .cmd button:hover{border-color:var(--indigo);color:var(--indigo)}
+  .fail{margin-top:8px;font-size:13px;color:var(--warn);background:var(--warnbg);
+    border-radius:6px;padding:7px 10px}
+  .fail b{font-weight:600}
+  .spells{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:6px;margin-top:10px}
+  .spells code{background:#F4F3EE;border:1px solid var(--line);border-radius:6px;
+    padding:6px 9px;font-family:ui-monospace,Consolas,monospace;font-size:12.5px;color:#1F1E19}
+  .note{background:#F2F1FB;border-left:3px solid var(--indigo);border-radius:0 8px 8px 0;
+    padding:12px 16px;margin:20px 0;font-size:13.5px;color:#3A3560}
+  .note b{color:var(--indigo)}
+  .reset{margin-top:40px;text-align:center}
+  .reset button{font:500 13px/1 inherit;background:#fff;border:1px solid #D8D6CE;
+    border-radius:8px;padding:9px 18px;cursor:pointer;color:var(--t2)}
+  footer{margin-top:40px;padding-top:20px;border-top:1px solid var(--line);
+    color:var(--t3);font-size:13px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>忆海 Mnemosyne · 游戏内验收清单</h1>
+  <p class="sub">离线检查（编译 / 资源校验 / 结构 NBT）已经全绿，这一份是唯一还没做的那一步。</p>
+  <p class="meta">MC 1.20.1 · Forge 47.4.0 · ISS 3.16.3 ｜ 生成于 2026-09-17</p>
+</header>
+
+<div class="bar">
+  <span class="count" id="count">0 / 0</span>
+  <div class="track"><div class="fill" id="fill"></div></div>
+  <span class="count" id="pct">0%</span>
+</div>
+
+<div class="note">
+  <b>怎么用</b>：先跑 <code>./gradlew runClient</code>，进游戏后用 <code>/gamemode creative</code>。
+  每条都给了可直接粘贴的命令和「预期」；打钩状态存在浏览器本地，刷新不丢。
+  <br><br>
+  <b>关键背景</b>：忆海学派设了 <code>requiresLearning = true</code>，所以<b>不先读忆碑就抄不了忆海法术</b> ——
+  这是设计，不是 bug。第 2 组必须先做。
+</div>
+
+<h2><span class="num">1</span>创造模式物品栏</h2>
+<p class="why">上一轮发现的集成缺口：ISS 的 <code>CreativeTabRegistry</code> 不扫描第三方物品，我们补了 <code>BuildCreativeModeTabContentsEvent</code>。这条验证它真的生效。</p>
+
+<div class="item"><input type="checkbox" data-k="c1"><div class="body">
+  <div class="title">创造物品栏里出现「忆海」标签页</div>
+  <div class="exp">预期：标签页标题为「忆海」，图标是忆晶。</div>
+</div></div>
+
+<div class="item"><input type="checkbox" data-k="c2"><div class="body">
+  <div class="title">16 个物品图标全部正常，无紫黑格</div>
+  <div class="exp">预期：忆晶、法书 t1–t5、法袍 4 件、法杖、匕首、忆墨、残页、忆符、碑片，共 16 个。</div>
+  <div class="fail"><b>紫黑格 =</b> 模型或贴图缺失。跑 <code>python tools/check_resources.py</code> 复查，并在日志里搜 <code>Unable to load model: mnemosyne</code>。</div>
+</div></div>
+
+<div class="item"><input type="checkbox" data-k="c3"><div class="body">
+  <div class="title">物品名称与 tooltip 是中文，没有 <code>item.mnemosyne.*</code> 原始键</div>
+  <div class="exp">预期：中英 lang 各 133 键且键集一致，不应出现原始键。</div>
+</div></div>
+
+<h2><span class="num">2</span>忆碑与学派解锁</h2>
+<p class="why">这是整个玩法的入口：学派 <code>requiresLearning = true</code>，忆碑是唯一的解锁途径，而它<b>没有配方</b> —— 只能从遗迹里拿。所以这里先用指令验证功能。</p>
+
+<div class="item"><input type="checkbox" data-k="s1"><div class="body">
+  <div class="title">放置忆碑，方块外观正常</div>
+  <div class="cmd">/setblock ~ ~ ~ mnemosyne:memory_stele<button>复制</button></div>
+  <div class="exp">预期：出现忆碑方块，贴图正常（非紫黑、非缺失模型）。</div>
+</div></div>
+
+<div class="item"><input type="checkbox" data-k="s2"><div class="body">
+  <div class="title">右键忆碑学会一个忆海法术</div>
+  <div class="exp">预期：聊天栏出现「学会了 &lt;法术名&gt;」，伴随 <code>ui.stele.read</code> 音效与粒子。</div>
+  <div class="fail"><b>没反应 =</b> 检查是否已是创造模式（部分交互有门槛），并看日志有无 <code>SteleUnlocks</code> 相关异常。</div>
+</div></div>
+
+<div class="item"><input type="checkbox" data-k="s3"><div class="body">
+  <div class="title">连续右键直到提示「已学完所有忆海法术」</div>
+  <div class="exp">预期：最终提示 <code>mnemosyne.msg.stele_all_learned</code> 对应的中文文案，不再报错。</div>
+</div></div>
+
+<div class="item"><input type="checkbox" data-k="s4"><div class="body">
+  <div class="title">解锁后能打开 ISS 法术轮盘看到忆海法术</div>
+  <div class="exp">预期：装备忆海法书后，轮盘里出现已学会的忆海法术（未学会的应显示为锁定）。</div>
+</div></div>
+
+<h2><span class="num">3</span>忆格系统与 HUD</h2>
+<p class="why">HUD 只在忆格非空时渲染（<code>EngramHudOverlay</code> 第 78 行 <code>if (engrams.isEmpty()) return;</code>），所以必须先编码一条记忆。数据走自有 S2C 包同步。</p>
+
+<div class="item"><input type="checkbox" data-k="e1"><div class="body">
+  <div class="title">初始（无忆格）时 HUD 不显示 —— 这是预期</div>
+  <div class="exp">预期：屏幕上看不到忆格条。</div>
+</div></div>
+
+<div class="item"><input type="checkbox" data-k="e2"><div class="body">
+  <div class="title">对生物编码一条记忆后 HUD 出现</div>
+  <div class="cmd">/summon minecraft:zombie ~ ~ ~2</div>
+  <div class="exp">用忆海法书对僵尸施放「铭忆」（<code>engrave</code>）→ 屏幕出现「忆格 1/3」。</div>
+  <div class="fail"><b>HUD 不出现 =</b> 忆格没写进去，或 S2C 包没同步。先查数据：<code>/data get entity @s mnemosyne_engram</code>。</div>
+</div></div>
+
+<div class="item"><input type="checkbox" data-k="e3"><div class="body">
+  <div class="title">忆格数据真的写进了玩家 NBT</div>
+  <div class="cmd">/data get entity @s mnemosyne_engram</div>
+  <div class="exp">预期：能看到 <code>slots</code> 列表，里面有条目。</div>
+  <div class="fail"><b>找不到键 =</b> 写入被静默丢弃（<code>getCompound</code> 返回脱离 tag 的老坑），检查是否走了 <code>writableRootTag()</code>。</div>
+</div></div>
+
+<div class="item"><input type="checkbox" data-k="e4"><div class="body">
+  <div class="title">登出重进后忆格还在，HUD 自动恢复</div>
+  <div class="exp">预期：重新进入世界后 HUD 立刻显示，数量不变。</div>
+</div></div>
+
+<div class="item"><input type="checkbox" data-k="e5"><div class="body">
+  <div class="title">等待 120 秒，普通忆格自然腐坏消失</div>
+  <div class="exp">预期：到期后 HUD 数量减少，聊天栏有腐坏提示。永久格（<code>permSlots</code>）不受影响。</div>
+  <div class="exp">快速验证可以改 <code>run/config/mnemosyne-server.toml</code> 里的腐坏秒数后重启。</div>
+</div></div>
+
+<h2><span class="num">4</span>遗忘系统</h2>
+<p class="why">上一轮实测发现 6 种生物（监守者等）走 <code>Brain</code> 而非 <code>GoalSelector</code>，对它们的遗忘是<b>静默降级</b>的 —— 这条要专门验一次，确认是"降级不崩"而不是"崩"。</p>
+
+<div class="item"><input type="checkbox" data-k="o1"><div class="body">
+  <div class="title">对僵尸施放「失忆」，目标行为改变</div>
+  <div class="cmd">/summon minecraft:zombie ~ ~ ~2</div>
+  <div class="exp">施放 <code>amnesia</code> → 僵尸应停止追踪 / 失去攻击性，并挂上遗忘状态效果图标。</div>
+</div></div>
+
+<div class="item"><input type="checkbox" data-k="o2"><div class="body">
+  <div class="title">状态效果图标正常（4 个效果）</div>
+  <div class="cmd">/effect give @s mnemosyne:forget 30
+/effect give @s mnemosyne:amnesia 30
+/effect give @s mnemosyne:cognitive_overload 30
+/effect give @s mnemosyne:sluggish 30<button>复制</button></div>
+  <div class="exp">预期：4 个效果都能挂上，图标与名称为中文，非紫黑格。</div>
+</div></div>
+
+<div class="item"><input type="checkbox" data-k="o3"><div class="body">
+  <div class="title">重复施放遗忘不崩溃、不卡顿</div>
+  <div class="exp">预期：连续施放 5 次以上无异常。这条验的是 <code>OblivionManager.Active</code> 的 merge 逻辑与幂等恢复。</div>
+  <div class="fail"><b>崩溃或日志报 <code>ConcurrentModificationException</code> =</b> <code>snapshot()</code> 没生效。</div>
+</div></div>
+
+<div class="item"><input type="checkbox" data-k="o4"><div class="body">
+  <div class="title">对监守者施放遗忘 —— 不崩溃，日志有降级记录</div>
+  <div class="cmd">/summon minecraft:warden ~ ~ ~6</div>
+  <div class="exp">预期：不崩溃；<code>AbilityMap.removalSupported()</code> 判定为不支持，走降级路径。</div>
+  <div class="exp">这是已知范围外项，只要"不崩 + 有日志"就算通过。</div>
+</div></div>
+
+<div class="item"><input type="checkbox" data-k="o5"><div class="body">
+  <div class="title">BOSS 免疫「剥夺」</div>
+  <div class="exp">预期：对末影龙 / 凋灵等 BOSS 施放剥夺类法术 → 提示免疫，而不是被剥成空壳。</div>
+</div></div>
+
+<h2><span class="num">5</span>卷轴与法书</h2>
+<p class="why">卷轴复用官方 <code>irons_spellbooks:scroll</code>（自注册是纯负收益）；法书 <code>extends SpellBook</code>。这条验证那两个"必须复用官方类"的结论在运行时真的成立。</p>
+
+<div class="item"><input type="checkbox" data-k="b1"><div class="body">
+  <div class="title">忆海法书装备后有开合动画</div>
+  <div class="cmd">/give @s mnemosyne:spell_book_t5<button>复制</button></div>
+  <div class="exp">预期：右键装备到法术书槽，手持时有开合动画（走 ISS 的 <code>instanceof SpellBook</code> 分支）。</div>
+  <div class="fail"><b>没有动画 =</b> <code>extends SpellBook</code> 的继承链断了。</div>
+</div></div>
+
+<div class="item"><input type="checkbox" data-k="b2"><div class="body">
+  <div class="title">5 本法书的 tooltip 显示不同忆格槽位</div>
+  <div class="cmd">/give @s mnemosyne:spell_book_t1
+/give @s mnemosyne:spell_book_t2
+/give @s mnemosyne:spell_book_t3
+/give @s mnemosyne:spell_book_t4
+/give @s mnemosyne:spell_book_t5<button>复制</button></div>
+  <div class="exp">预期：槽位依次为 <b>3 / 5 / 6 / 8 / 8</b>（T4、T5 同为 EPIC，因为 1.20.1 的 <code>Rarity</code> 没有 LEGENDARY）。</div>
+</div></div>
+
+<div class="item"><input type="checkbox" data-k="b3"><div class="body">
+  <div class="title">忆海卷轴显示忆海配色，不是默认米黄</div>
+  <div class="exp">预期：从遗迹箱子开出的忆海卷轴是靛蓝/品红配色。这条验的是 ISS 按学派拼 id 解析 <code>mnemosyne:item/scroll_memory</code> 是否成功。</div>
+  <div class="fail"><b>米黄色 =</b> <code>models/item/scroll_memory.json</code> 没被加载。</div>
+</div></div>
+
+<div class="item"><input type="checkbox" data-k="b4"><div class="body">
+  <div class="title">忆海戒指模型正常（学派随机到忆海时）</div>
+  <div class="exp">预期：<code>irons_spellbooks:affinity_ring</code> 随机到忆海学派时显示忆海戒指，不是紫黑格。</div>
+  <div class="exp">这条是上一轮 <code>runClient</code> 才抓出来的隐性资源，值得单独确认一次。</div>
+</div></div>
+
+<h2><span class="num">6</span>铭刻台抄录</h2>
+<p class="why">ISS 的铭刻台输入槽用<b>具体类</b> <code>Scroll</code> 校验，法书也必须是 <code>SpellBook</code> 子类 —— 这条是整个卷轴链路最容易静默失败的一环。</p>
+
+<div class="item"><input type="checkbox" data-k="i1"><div class="body">
+  <div class="title">官方铭刻台能接受忆海卷轴</div>
+  <div class="cmd">/give @s irons_spellbooks:inscription_table
+/give @s irons_spellbooks:iron_spell_book<button>复制</button></div>
+  <div class="exp">预期：卷轴放进输入槽后不被弹出，界面正常显示法术名。</div>
+  <div class="fail"><b>卷轴被弹回 =</b> 输入槽校验没过，说明我们的卷轴不是官方 <code>Scroll</code> 实例。</div>
+</div></div>
+
+<div class="item"><input type="checkbox" data-k="i2"><div class="body">
+  <div class="title">成功把忆海法术抄进忆海法书</div>
+  <div class="exp">预期：抄录后法书里出现该法术，消耗青金石/墨水等材料。</div>
+</div></div>
+
+<div class="item"><input type="checkbox" data-k="i3"><div class="body">
+  <div class="title">忆格满时抄录被拒绝（承载力校验）</div>
+  <div class="exp">预期：<code>InscribeEvents</code> 拦截并给出提示，而不是静默让玩家抄进去。</div>
+  <div class="exp">规则按规范字面实现；如果觉得"战斗中忆格常满导致抄不了书"体验不好，可以改成"忆海法书最多铭刻 N 个忆海法术"，这条等你实测手感再定。</div>
+</div></div>
+
+<h2><span class="num">7</span>忆魇实体</h2>
+<p class="why">注册实体有两个必做步骤，漏掉 <code>EntityAttributeCreationEvent</code> 会"能 summon 但生成即死"，漏掉渲染器会完全不渲染 —— 都只有 debug 级日志。</p>
+
+<div class="item"><input type="checkbox" data-k="w1"><div class="body">
+  <div class="title">忆魇能生成、有血量、有贴图</div>
+  <div class="cmd">/summon mnemosyne:memory_wraith ~ ~ ~3<button>复制</button></div>
+  <div class="exp">预期：实体出现，血条非空（不是生成即死），贴图正常且有浮动动画。</div>
+  <div class="fail"><b>生成即死 =</b> 漏了 <code>EntityAttributeCreationEvent.put()</code>。<b>完全看不见 =</b> 漏了 <code>RegisterRenderers</code>。</div>
+</div></div>
+
+<div class="item"><input type="checkbox" data-k="w2"><div class="body">
+  <div class="title">忆魇会主动攻击玩家</div>
+  <div class="exp">预期：靠近后忆魇发起攻击。</div>
+</div></div>
+
+<div class="item"><input type="checkbox" data-k="w3"><div class="body">
+  <div class="title">刷怪蛋可用且模型正常</div>
+  <div class="cmd">/give @s mnemosyne:memory_wraith_spawn_egg<button>复制</button></div>
+  <div class="exp">预期：刷怪蛋图标正常（<code>template_spawn_egg</code> 模型，这条也是上一轮客户端才抓出来的）。</div>
+</div></div>
+
+<h2><span class="num">8</span>忆者遗迹</h2>
+<p class="why">23 个结构 NBT 已经在真实服务端验证过"有内容"、<code>/locate</code> 也能定位。这条验的是<b>实际跑过去看</b>：建筑是不是实心的、箱子是不是空的。</p>
+
+<div class="item"><input type="checkbox" data-k="r1"><div class="body">
+  <div class="title">能定位到遗迹</div>
+  <div class="cmd">/locate structure mnemosyne:memory_ruin<button>复制</button></div>
+  <div class="exp">预期：返回坐标（服务端已实测 FOUND）。</div>
+</div></div>
+
+<div class="item"><input type="checkbox" data-k="r2"><div class="body">
+  <div class="title">传送过去，建筑是实心的不是"埋在原石里"</div>
+  <div class="exp">预期：能看到忆砖墙体、走道、忆碑、忆晶簇 —— 走道里<b>不应该</b>是原地石头。</div>
+  <div class="fail"><b>走道是实心石头 =</b> 结构 NBT 没写满包围盒（<code>placeInWorld</code> 未列出的格子会保持世界原样）。</div>
+</div></div>
+
+<div class="item"><input type="checkbox" data-k="r3"><div class="body">
+  <div class="title">遗迹箱子能开出忆晶和忆海卷轴</div>
+  <div class="exp">预期：箱子里有忆晶、忆符、碑片；卷轴是<b>忆海学派</b>的（掉落表已按 <code>mnemosyne:memory</code> 过滤）。</div>
+  <div class="fail"><b>箱子全空 =</b> 掉落表引用了未注册物品（只 <code>warn</code> 不报错）。</div>
+</div></div>
+
+<div class="item"><input type="checkbox" data-k="r4"><div class="body">
+  <div class="title">遗迹里能找到忆碑，右键解锁学派</div>
+  <div class="exp">预期：忆碑出现在 <code>ruin_main</code> / <code>mnemonic_core</code> / <code>broken_stele</code> 三个模板里，这就是生存模式下学忆海法术的正规途径。</div>
+</div></div>
+
+<h2><span class="num">9</span>装备</h2>
+<div class="item"><input type="checkbox" data-k="g1"><div class="body">
+  <div class="title">法杖能蓄力施法</div>
+  <div class="cmd">/give @s mnemosyne:memory_staff<button>复制</button></div>
+  <div class="exp">预期：装备后长按右键蓄力，能施放已学会的法术。法杖继承 <code>CastingItem</code>，渲染退回 2D 图标是预期。</div>
+</div></div>
+
+<div class="item"><input type="checkbox" data-k="g2"><div class="body">
+  <div class="title">法袍四件套可穿、护甲值与属性正常</div>
+  <div class="cmd">/give @s mnemosyne:mnemonic_robe_helmet
+/give @s mnemosyne:mnemonic_robe_chestplate
+/give @s mnemosyne:mnemonic_robe_leggings
+/give @s mnemosyne:mnemonic_robe_boots<button>复制</button></div>
+  <div class="exp">预期：穿上有护甲值，穿上后忆格上限 +1/+2 生效（HUD 的 <code>x/max</code> 分母变大）。</div>
+  <div class="exp">这是 <code>MnemosyneData.getEquipmentSlotBonus()</code> 那条老钩子，值得重点看。</div>
+</div></div>
+
+<div class="item"><input type="checkbox" data-k="g3"><div class="body">
+  <div class="title">匕首击杀生物触发「拾忆」</div>
+  <div class="cmd">/give @s mnemosyne:recollector<button>复制</button></div>
+  <div class="exp">预期：用匕首击杀生物后，聊天栏提示拾忆成功，或直接写入一条忆格。</div>
+</div></div>
+
+<div class="item"><input type="checkbox" data-k="g4"><div class="body">
+  <div class="title">合成配方可用（工作台 3×3）</div>
+  <div class="exp">预期：忆墨（忆晶 / 残页两条路线）、法袍 4 件、法杖、匕首共 8 个配方都能合出来，不超 9 格。</div>
+</div></div>
+
+<h2><span class="num">10</span>16 个法术逐个施放</h2>
+<p class="why">全部 16 个都已经填了真实的 <code>onCast</code>（没有残留的"尚未实现"），但<b>没有一个在游戏里被施放过</b>。建议用创造模式法书全学会后逐个点一遍，重点看：有没有报错、有没有效果、音效对不对。</p>
+
+<div class="item"><input type="checkbox" data-k="p1"><div class="body">
+  <div class="title">低阶 6 个（Common / Uncommon）</div>
+  <div class="spells">
+    <code>memory_arrow</code><code>memory_shard</code><code>glimpse</code>
+    <code>encode_trait</code><code>encode_pain</code><code>engrave</code>
+  </div>
+  <div class="fail"><b>施放无效果且日志无输出 =</b> 最容易是 <code>DamageSources.applyDamage</code> 没用上，或法术 id 三处不一致导致静默无声。</div>
+</div></div>
+
+<div class="item"><input type="checkbox" data-k="p2"><div class="body">
+  <div class="title">中阶 4 个（Rare）</div>
+  <div class="spells">
+    <code>amnesia</code><code>expand_mind</code><code>recollection</code><code>curse_of_oblivion</code>
+  </div>
+  <div class="exp"><code>curse_of_oblivion</code> 的领域现在是<b>完整符文阵</b>：双圈反向旋转 + 上升记忆尘埃 + 边界光柱爬升，每抹掉一项能力打一发脉冲；领域结束后还会<b>残留 3 秒</b>渐隐。</div>
+</div></div>
+
+<div class="item"><input type="checkbox" data-k="p3"><div class="body">
+  <div class="title">高阶 6 个（Epic / 顶级）</div>
+  <div class="spells">
+    <code>cognitive_collapse</code><code>deja_vu</code><code>mass_amnesia</code>
+    <code>memory_theft</code><code>sea_of_memory</code><code>thousand_memories</code>
+  </div>
+  <div class="exp">预期：每个都有可见效果 + 正确音效，且不刷 <code>ERROR</code>。</div>
+</div></div>
+
+<div class="item"><input type="checkbox" data-k="p4"><div class="body">
+  <div class="title">施法后检查日志：无忆海相关 ERROR</div>
+  <div class="exp">位置：<code>run/logs/latest.log</code>。搜 <code>mnemosyne</code> 看有没有 <code>ERROR</code> / <code>Exception</code>。</div>
+</div></div>
+
+<div class="note">
+  <b>不在本清单里的（已知欠账，不用测）</b><br>
+  · 记忆升级宝珠 —— 刻意不做，贴图与配方都没生成<br>
+  · 8 条主动特性（爬墙 / 短传送 / 滑翔 / 无声行走 / 地形加速等）—— WS-E2 范围，<code>applyTrait</code> 会返回 false 并记日志<br>
+  · 6 种 Brain 生物（监守者等）的完整遗忘 —— 需要 Mixin，WS-E2<br>
+  · 自有 <code>.ogg</code> 音效 —— 全部复用 ISS 音频，服从其 ARR 授权
+</div>
+
+<div class="reset"><button id="reset">清空所有勾选</button></div>
+
+<footer>
+  忆海 Mnemosyne · 游戏内验收清单 ｜ 命令与 id 全部从源码与 ISS 资源中逐字提取，未凭记忆填写。<br>
+  数据源：<code>ModItems</code> / <code>ModBlocks</code> / <code>ModEntities</code> / <code>ModEffects</code> / <code>lang/*.json</code> / <code>loot_tables/chests/memory_ruin/*</code>
+</footer>
+
+</div>
+
+<script>
+(function(){
+  var boxes = Array.prototype.slice.call(document.querySelectorAll('.item input[type=checkbox]'));
+  var count = document.getElementById('count');
+  var pct = document.getElementById('pct');
+  var fill = document.getElementById('fill');
+  var KEY = 'mnemosyne_acceptance_v1';
+
+  function load(){
+    var saved = {};
+    try { saved = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch(e){ saved = {}; }
+    boxes.forEach(function(b){ if (saved[b.dataset.k]) { b.checked = true; } });
+    render();
+  }
+  function save(){
+    var out = {};
+    boxes.forEach(function(b){ if (b.checked) { out[b.dataset.k] = 1; } });
+    try { localStorage.setItem(KEY, JSON.stringify(out)); } catch(e){}
+  }
+  function render(){
+    var done = boxes.filter(function(b){ return b.checked; }).length;
+    var total = boxes.length;
+    count.textContent = done + ' / ' + total;
+    var p = total ? Math.round(done * 100 / total) : 0;
+    pct.textContent = p + '%';
+    fill.style.width = p + '%';
+    boxes.forEach(function(b){
+      b.closest('.item').classList.toggle('done', b.checked);
+    });
+  }
+
+  boxes.forEach(function(b){
+    b.addEventListener('change', function(){ save(); render(); });
+  });
+
+  document.querySelectorAll('.cmd button').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var box = btn.closest('.cmd');
+      var text = box.textContent.replace('复制','').trim();
+      var done = function(){ btn.textContent = '已复制'; setTimeout(function(){ btn.textContent = '复制'; }, 1200); };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done, done);
+      } else {
+        var ta = document.createElement('textarea');
+        ta.value = text; document.body.appendChild(ta); ta.select();
+        try { document.execCommand('copy'); } catch(e){}
+        document.body.removeChild(ta); done();
+      }
+    });
+  });
+
+  document.getElementById('reset').addEventListener('click', function(){
+    boxes.forEach(function(b){ b.checked = false; });
+    save(); render();
+  });
+
+  load();
+})();
+</script>
+</body>
+</html>

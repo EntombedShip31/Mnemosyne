@@ -1,0 +1,44 @@
+# ---- Gradle ----
+.gradle/
+build/
+out/
+bin/
+run/
+run-server/
+run-data/
+src/generated/resources/
+
+# ---- IDE ----
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+.settings/
+.classpath
+.project
+
+# ---- Misc ----
+*.log
+*.pid
+nul
+
+# ---- 第三方参考副本 ----
+# ISS 是 All Rights Reserved：解包出来的副本只作本地查资源用，
+# 绝不能随仓库分发。build.gradle 的依赖走 maven，不依赖这个目录。
+\[Iron的法术与魔法书\] irons_spellbooks-1.20.1-3.16.3/
+*irons_spellbooks-1.20.1-3.16.3/
+
+# 其他模组的解包副本（同为 All Rights Reserved，只作本地参考）
+可以参考的模组/
+*可以参考的模组/
+
+# 临时清理隔离区（技能 windows-safe-cleanup-quarantine 用）
+build/_trash_*/
+
+# ---- AI 工作区 ----
+# 项目记忆 / 会话日志，含本地绝对路径与协作偏好，不随公开仓库分发。
+.workbuddy-ai/
+
+# CI 上 copyToMinecraftMods 的重定向目标（见 .github/workflows/build.yml）
+build/ci-mods/

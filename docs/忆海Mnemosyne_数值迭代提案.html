@@ -1,0 +1,254 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<title>忆海 Mnemosyne · 数值定稿 v6</title><style>
+ :root{--ink:#1b1a24;--dim:#5b5870;--line:#e3e0ef;--bg:#fbfaff;--card:#fff;--indigo:#534AB7;--soft:#f2f0fb;}
+ *{box-sizing:border-box;}
+ body{margin:0;padding:34px 26px 80px;background:var(--bg);color:var(--ink);font:14px/1.7 "Segoe UI","Microsoft YaHei",system-ui,sans-serif;}
+ .wrap{max-width:1340px;margin:0 auto;}
+ h1{font-size:25px;margin:0 0 4px;} h1 small{font-weight:400;color:var(--dim);font-size:13px;margin-left:10px;}
+ h2{font-size:16px;margin:34px 0 10px;padding-left:9px;border-left:4px solid var(--indigo);}
+ .lead{color:var(--dim);margin:0;}
+ .note{background:var(--soft);border-left:3px solid var(--indigo);padding:11px 15px;border-radius:6px;margin:11px 0;}
+ .note b{color:var(--indigo);} .ok{background:#eef8f1;border-left-color:#3f8f6a;} .ok b{color:#2f7355;}
+ .warn{background:#fff8e6;border-left-color:#c98a1a;} .warn b{color:#a86f0d;}
+ table{border-collapse:collapse;width:100%;background:var(--card);}
+ th,td{border:1px solid var(--line);padding:5px 9px;} th{background:var(--soft);font-weight:600;}
+ code{font:12px/1.4 Consolas,monospace;color:var(--dim);}
+ .bg{display:inline-block;padding:1px 8px;border-radius:10px;font-size:11px;font-weight:600;color:#fff;white-space:nowrap;}
+ .bg.c{background:#7c8a99;} .bg.u{background:#3f8f6a;} .bg.r{background:#2f6fb0;}
+ .bg.e{background:#8a4fbf;} .bg.l{background:#c9702a;} .bg.mx{background:#333;}
+ .ov td,.ov th{padding:7px 10px;font-size:13px;vertical-align:top;}
+ .ov .mxv{text-align:center;font-size:18px;font-weight:700;color:var(--indigo);}
+ .ov .mn{white-space:nowrap;} .dim{color:#a9a6b8;font-size:11px;}
+ .sp{background:var(--card);border:1px solid var(--line);border-radius:10px;margin:14px 0;overflow:hidden;}
+ .sp header{padding:9px 13px;background:var(--soft);border-bottom:1px solid var(--line);display:flex;flex-wrap:wrap;align-items:center;gap:5px;}
+ .sp .nm{font-size:15px;font-weight:700;} .sp .meta{margin-left:auto;color:var(--dim);font-size:12px;}
+ .prose{padding:10px 14px;font-size:13px;color:#33314a;background:#faf9ff;border-bottom:1px solid var(--line);line-height:1.75;}
+ .unl{padding:8px 14px 10px;font-size:12.5px;background:#fffdf2;border-bottom:1px solid var(--line);}
+ .unl>b{color:#8a6d1a;} .unl ul{margin:5px 0 0;padding-left:20px;} .unl li{margin:2px 0;}
+ .lv2 th,.lv2 td{border:0;border-bottom:1px solid var(--line);padding:4px 9px;font-size:13px;text-align:center;}
+ .lv2 tr:last-child th,.lv2 tr:last-child td{border-bottom:0;}
+ .lv2 th:first-child,.lv2 td:first-child{text-align:left;font-weight:700;color:var(--indigo);white-space:nowrap;}
+ .lv2 .dcol{text-align:left;} .lv2 td:last-child{text-align:left;color:#3f6b52;font-size:12px;}
+ .lv2 .no{color:#a9a6b8;} .lv2 tr:nth-child(even) td{background:#fcfbff;}
+ footer{margin-top:36px;color:var(--dim);font-size:12px;border-top:1px solid var(--line);padding-top:13px;}
+</style></head><body><div class="wrap">
+<h1>数值定稿 <small>忆海 Mnemosyne · 21 个法术 · v6 · 已审计 + 优化</small></h1>
+<p class="lead">本版<b>只保留最新数值</b>（去掉了旧值对照），并为每个法术补上详细文字解释与<b>质性等级解锁</b>。</p>
+
+<h2>一、数值审计结论</h2>
+<div class="note ok">
+  <b>✅ 通过的三项</b><br>
+  ① <b>每级增量比</b>：21 个法术全部落在 <b>0.176 ~ 0.206</b>，中位 <b>0.200</b> —— 与官方中位数完全一致。<br>
+  ② <b>满级法力</b>：<b>29 ~ 197</b>，全部落在官方全局区间（10~800）内。<br>
+  ③ <b>法力梯度</b>：低阶 55~70 → 中阶 90~107 → 高阶 120~150 → 终局 183~197，层次清晰。
+</div>
+<div class="warn note">
+  <b>⚠️ 审计发现的问题</b><br>
+  <b>问题 1 · 碎忆的法力消耗率是全场最高（21.50 法力/秒）</b>，
+  超过官方 p90（10.00）的两倍 —— 而它只是 COMMON 低阶法术。
+  「低阶法术最贵」是明显的定位错位。<br>
+  <b>问题 2 · 无尽忆域（210 法力）比忆海（197 法力）更贵，但轴更少</b>（2 条 vs 4 条）——
+  <b>强度与代价倒挂</b>。<br>
+  <b>问题 3 · 窥忆的最大等级设计有缺陷</b>：原定 4 级，但代码里
+  「可被遗忘的能力清单 + 掉落预览」是 <b>L5 才解锁</b> —— 也就是说<b>永远解锁不了</b>。
+</div>
+
+<h2>二、本轮优化（5 项）</h2>
+<table>
+ <tr><th style="width:110px">法术</th><th style="width:150px">改动</th><th>理由</th></tr>
+ <tr><td><b>碎忆</b></td><td>满级法力 90 → <b>65</b></td>
+     <td>消耗率 21.50 → <b>15.50</b>，从"全场最贵"回到合理区间</td></tr>
+ <tr><td><b>无尽忆域</b></td><td>满级法力 210 → <b>185</b></td>
+     <td>现在<b>低于忆海（197）</b>，与它"只有两条轴"的强度定位对齐</td></tr>
+ <tr><td><b>窥忆</b></td><td>最大等级 4 → <b>5</b><br>满级法力 25 → <b>30</b></td>
+     <td>⭐ 修复设计缺陷：5 档情报对应 5 级，L5 的「能力清单 + 掉落预览」终于能解锁</td></tr>
+ <tr><td><b>帧缚</b></td><td>满级法力 83 → <b>90</b></td>
+     <td>与同档（Rare / 5 级）的失忆、忆格扩张统一</td></tr>
+ <tr><td><b>残迹回溯</b></td><td>满级法力 60 → <b>70</b></td>
+     <td>官方 6 级法术满级法力中位 90，60 偏低</td></tr>
+</table>
+
+<h2>三、总览（按最大等级降序）</h2>
+<table class="ov">
+ <tr><th style="width:150px">法术</th><th style="width:100px">起始稀有度</th><th style="width:58px">最大等级</th>
+     <th style="width:120px">法力</th><th style="width:70px">消耗率</th><th>关键质性解锁</th></tr>
+ <tr><td><b>千忆归一</b><br><code>thousand_memories</code></td><td><span class="bg e">Epic</span></td><td class="mxv">10</td><td class="mn">65 + 13/级<br><span class="dim">满级 182</span></td><td class="mn">1.97/秒</td><td>L5 ⭐ 50% 概率<b>不烧掉；</td></tr><tr><td><b>忆海</b><br><code>sea_of_memory</code></td><td><span class="bg e">Epic</span></td><td class="mxv">10</td><td class="mn">71 + 14/级<br><span class="dim">满级 197</span></td><td class="mn">2.12/秒</td><td>—</td></tr><tr><td><b>忆矢</b><br><code>memory_arrow</code></td><td><span class="bg c">Common</span></td><td class="mxv">10</td><td class="mn">11 + 2/级<br><span class="dim">满级 29</span></td><td class="mn">14.50/秒</td><td>—</td></tr><tr><td><b>无尽忆域</b><br><code>endless_realm</code></td><td><span class="bg e">Epic</span></td><td class="mxv">10</td><td class="mn">66 + 13/级<br><span class="dim">满级 183</span></td><td class="mn">1.49/秒</td><td>—</td></tr><tr><td><b>碎忆</b><br><code>memory_shard</code></td><td><span class="bg c">Common</span></td><td class="mxv">8</td><td class="mn">27 + 5/级<br><span class="dim">满级 62</span></td><td class="mn">15.50/秒</td><td>—</td></tr><tr><td><b>认知崩坏</b><br><code>cognitive_collapse</code></td><td><span class="bg e">Epic</span></td><td class="mxv">8</td><td class="mn">50 + 10/级<br><span class="dim">满级 120</span></td><td class="mn">10.00/秒</td><td>L4 ⭐ 引爆后附加<b>后续加成；</td></tr><tr><td><b>遗忘诅咒</b><br><code>curse_of_oblivion</code></td><td><span class="bg r">Rare</span></td><td class="mxv">8</td><td class="mn">62 + 12/级<br><span class="dim">满级 146</span></td><td class="mn">5.62/秒</td><td>—</td></tr><tr><td><b>铭刻适应</b><br><code>adaptation</code></td><td><span class="bg r">Rare</span></td><td class="mxv">8</td><td class="mn">44 + 9/级<br><span class="dim">满级 107</span></td><td class="mn">3.57/秒</td><td>—</td></tr><tr><td><b>既视感</b><br><code>deja_vu</code></td><td><span class="bg e">Epic</span></td><td class="mxv">6</td><td class="mn">50 + 10/级<br><span class="dim">满级 100</span></td><td class="mn">3.33/秒</td><td>—</td></tr><tr><td><b>残迹回溯</b><br><code>retrograde</code></td><td><span class="bg u">Uncommon</span></td><td class="mxv">6</td><td class="mn">35 + 7/级<br><span class="dim">满级 70</span></td><td class="mn">5.83/秒</td><td>—</td></tr><tr><td><b>记忆掠夺</b><br><code>memory_theft</code></td><td><span class="bg e">Epic</span></td><td class="mxv">6</td><td class="mn">60 + 12/级<br><span class="dim">满级 120</span></td><td class="mn">2.55/秒</td><td>L2 ⭐ 对<b>精英怪</b>的；L5 ⭐ 偷来的特质写入<b>永久；</td></tr><tr><td><b>集体遗忘</b><br><code>mass_amnesia</code></td><td><span class="bg e">Epic</span></td><td class="mxv">6</td><td class="mn">65 + 13/级<br><span class="dim">满级 130</span></td><td class="mn">3.10/秒</td><td>L4 ⭐ <b>保护友军</b> ；L5 ⭐ 目标<b>延迟锁定</b；</td></tr><tr><td><b>失忆</b><br><code>amnesia</code></td><td><span class="bg r">Rare</span></td><td class="mxv">5</td><td class="mn">50 + 10/级<br><span class="dim">满级 90</span></td><td class="mn">7.50/秒</td><td>L5 ⭐ 可额外影响<b>第二个目；</td></tr><tr><td><b>帧缚</b><br><code>framebind</code></td><td><span class="bg r">Rare</span></td><td class="mxv">5</td><td class="mn">50 + 10/级<br><span class="dim">满级 90</span></td><td class="mn">4.50/秒</td><td>—</td></tr><tr><td><b>忆格扩张</b><br><code>expand_mind</code></td><td><span class="bg r">Rare</span></td><td class="mxv">5</td><td class="mn">50 + 10/级<br><span class="dim">满级 90</span></td><td class="mn">3.00/秒</td><td>L4 ⭐ 忆格带来的<b>施法速度；L5 ⭐ 忆格带来的<b>法力惩罚；</td></tr><tr><td><b>痛忆</b><br><code>encode_pain</code></td><td><span class="bg u">Uncommon</span></td><td class="mxv">5</td><td class="mn">31 + 6/级<br><span class="dim">满级 55</span></td><td class="mn">6.63/秒</td><td>—</td></tr><tr><td><b>窥忆</b><br><code>glimpse</code></td><td><span class="bg c">Common</span></td><td class="mxv">5</td><td class="mn">17 + 3/级<br><span class="dim">满级 29</span></td><td class="mn">14.50/秒</td><td>—</td></tr><tr><td><b>献忆</b><br><code>oblation</code></td><td><span class="bg u">Uncommon</span></td><td class="mxv">4</td><td class="mn">34 + 7/级<br><span class="dim">满级 55</span></td><td class="mn">2.20/秒</td><td>—</td></tr><tr><td><b>质忆</b><br><code>encode_trait</code></td><td><span class="bg u">Uncommon</span></td><td class="mxv">3</td><td class="mn">39 + 8/级<br><span class="dim">满级 55</span></td><td class="mn">9.48/秒</td><td>—</td></tr><tr><td><b>走马灯</b><br><code>recollection</code></td><td><span class="bg r">Rare</span></td><td class="mxv">3</td><td class="mn">86 + 17/级<br><span class="dim">满级 120</span></td><td class="mn">1.33/秒</td><td>—</td></tr><tr><td><b>铭忆</b><br><code>engrave</code></td><td><span class="bg l">Legendary</span></td><td class="mxv">1</td><td class="mn">100<br><span class="dim">满级 100</span></td><td class="mn">6.25/秒</td><td>—</td></tr>
+</table>
+
+<h2>四、逐法术详解</h2>
+<section class="sp">
+  <header><span class="nm">千忆归一</span><code>thousand_memories</code>
+    <span class="bg e">起始 Epic</span>
+    <span class="bg mx">最大 <b>10</b> 级</span>
+    <span class="meta">冷却 90.0s · 50 tick · 满级法力 <b>182</b> · 满级 1.97 法力/秒</span></header>
+  <div class="prose">终局单发。⭐ <b>烧光你持有的全部忆格</b>，把它们全部转化为伤害打出去，并对目标施加遗忘。忆格越多伤害越高。伤害拆成三段：普通（受抗性影响）、真实（无视一切减免）、元素（2 秒内分 4 跳的 DoT）。<br>⭐ <b>满级（L5 起）</b>有 50% 概率<b>保留永久记忆</b> —— 这是它最重要的质性解锁，否则每次放完都会清空你辛苦攒的永久格。</div>
+  <div class="unl"><b>等级带来的效果（含非数值的质性解锁）：</b><ul><li><b>L1</b>　消耗全部忆格转化为伤害 + 施加遗忘</li><li><b>L5</b>　⭐ 50% 概率<b>不烧掉永久记忆</b></li></ul></div>
+  <table class="lv2"><tr><th class="lv">等级</th><th>稀有度</th><th>法力</th><th>每格伤害</th><th>遗忘（秒）</th><th class="dcol">相比上一级</th></tr>
+    <tr><td class="lv">L1</td><td><span class="bg e">Epic</span></td><td>65</td><td>8.0</td><td>4 秒</td><td class="no">— 基础效果</td></tr><tr><td class="lv">L2</td><td><span class="bg e">Epic</span></td><td>78</td><td>8.7</td><td>4 秒</td><td>法力 +13 · 每格伤害 +0.7</td></tr><tr><td class="lv">L3</td><td><span class="bg e">Epic</span></td><td>91</td><td>9.3</td><td>5 秒</td><td>法力 +13 · 每格伤害 +0.6 · 遗忘 +1</td></tr><tr><td class="lv">L4</td><td><span class="bg e">Epic</span></td><td>104</td><td>10.0</td><td>5 秒</td><td>法力 +13 · 每格伤害 +0.7</td></tr><tr><td class="lv">L5</td><td><span class="bg e">Epic</span></td><td>117</td><td>10.7</td><td>6 秒</td><td>法力 +13 · 每格伤害 +0.7 · 遗忘 +1</td></tr><tr><td class="lv">L6</td><td><span class="bg e">Epic</span></td><td>130</td><td>11.3</td><td>6 秒</td><td>法力 +13 · 每格伤害 +0.6</td></tr><tr><td class="lv">L7</td><td><span class="bg l">Legendary</span></td><td>143</td><td>12.0</td><td>7 秒</td><td>法力 +13 · 每格伤害 +0.7 · 遗忘 +1</td></tr><tr><td class="lv">L8</td><td><span class="bg l">Legendary</span></td><td>156</td><td>12.7</td><td>7 秒</td><td>法力 +13 · 每格伤害 +0.7</td></tr><tr><td class="lv">L9</td><td><span class="bg l">Legendary</span></td><td>169</td><td>13.3</td><td>8 秒</td><td>法力 +13 · 每格伤害 +0.6 · 遗忘 +1</td></tr><tr><td class="lv">L10</td><td><span class="bg l">Legendary</span></td><td>182</td><td>14.0</td><td>8 秒</td><td>法力 +13 · 每格伤害 +0.7</td></tr></table></section><section class="sp">
+  <header><span class="nm">忆海</span><code>sea_of_memory</code>
+    <span class="bg e">起始 Epic</span>
+    <span class="bg mx">最大 <b>10</b> 级</span>
+    <span class="meta">冷却 90.0s · 60 tick · 满级法力 <b>197</b> · 满级 2.12 法力/秒</span></header>
+  <div class="prose">⭐ 流派<b>终局场地技</b>，唯一的 10 级之一。以原始记忆淹没一片区域，领域内每秒给敌人叠一层认知过载（上限随等级 8~15 层），同时给自己 +3 临时忆格、并把每格共鸣加成推到 0.30~0.40。<br>它是"场地"而不是"爆发"：先放忆海把敌人泡在里面叠层，再用认知崩坏引爆。四条轴同步成长，且是玩家会专门攒资源去养的法术。</div>
+  <div class="unl"><b>等级带来的效果（含非数值的质性解锁）：</b><ul><li><b>L1</b>　张开忆海领域：每秒叠层 + 自身 +3 临时忆格 + 共鸣加成提升</li></ul></div>
+  <table class="lv2"><tr><th class="lv">等级</th><th>稀有度</th><th>法力</th><th>半径（格）</th><th>持续（秒）</th><th>共鸣/格</th><th>叠层上限</th><th class="dcol">相比上一级</th></tr>
+    <tr><td class="lv">L1</td><td><span class="bg e">Epic</span></td><td>71</td><td>10.0 格</td><td>15 秒</td><td>0.300</td><td>8 层</td><td class="no">— 基础效果</td></tr><tr><td class="lv">L2</td><td><span class="bg e">Epic</span></td><td>85</td><td>10.4 格</td><td>17 秒</td><td>0.311</td><td>9 层</td><td>法力 +14 · 半径 +0.4 · 持续 +2 · 共鸣/格 +0.011 · 叠层上限 +1</td></tr><tr><td class="lv">L3</td><td><span class="bg e">Epic</span></td><td>99</td><td>10.9 格</td><td>18 秒</td><td>0.322</td><td>10 层</td><td>法力 +14 · 半径 +0.5 · 持续 +1 · 共鸣/格 +0.011 · 叠层上限 +1</td></tr><tr><td class="lv">L4</td><td><span class="bg e">Epic</span></td><td>113</td><td>11.3 格</td><td>20 秒</td><td>0.333</td><td>10 层</td><td>法力 +14 · 半径 +0.4 · 持续 +2 · 共鸣/格 +0.011</td></tr><tr><td class="lv">L5</td><td><span class="bg e">Epic</span></td><td>127</td><td>11.8 格</td><td>22 秒</td><td>0.344</td><td>11 层</td><td>法力 +14 · 半径 +0.5 · 持续 +2 · 共鸣/格 +0.011 · 叠层上限 +1</td></tr><tr><td class="lv">L6</td><td><span class="bg e">Epic</span></td><td>141</td><td>12.2 格</td><td>23 秒</td><td>0.356</td><td>12 层</td><td>法力 +14 · 半径 +0.4 · 持续 +1 · 共鸣/格 +0.012 · 叠层上限 +1</td></tr><tr><td class="lv">L7</td><td><span class="bg l">Legendary</span></td><td>155</td><td>12.7 格</td><td>25 秒</td><td>0.367</td><td>13 层</td><td>法力 +14 · 半径 +0.5 · 持续 +2 · 共鸣/格 +0.011 · 叠层上限 +1</td></tr><tr><td class="lv">L8</td><td><span class="bg l">Legendary</span></td><td>169</td><td>13.1 格</td><td>27 秒</td><td>0.378</td><td>13 层</td><td>法力 +14 · 半径 +0.4 · 持续 +2 · 共鸣/格 +0.011</td></tr><tr><td class="lv">L9</td><td><span class="bg l">Legendary</span></td><td>183</td><td>13.6 格</td><td>28 秒</td><td>0.389</td><td>14 层</td><td>法力 +14 · 半径 +0.5 · 持续 +1 · 共鸣/格 +0.011 · 叠层上限 +1</td></tr><tr><td class="lv">L10</td><td><span class="bg l">Legendary</span></td><td>197</td><td>14.0 格</td><td>30 秒</td><td>0.400</td><td>15 层</td><td>法力 +14 · 半径 +0.4 · 持续 +2 · 共鸣/格 +0.011 · 叠层上限 +1</td></tr></table></section><section class="sp">
+  <header><span class="nm">忆矢</span><code>memory_arrow</code>
+    <span class="bg c">起始 Common</span>
+    <span class="bg mx">最大 <b>10</b> 级</span>
+    <span class="meta">冷却 2.0s · 瞬发 · 满级法力 <b>29</b> · 满级 14.50 法力/秒</span></header>
+  <div class="prose">流派唯一的<b>普攻</b>。瞬发、2 秒冷却、只要 8 点法力起步，是每一场战斗的起手式。它不做任何花哨的事 —— 就是稳定地把「伤害系数」打到目标身上，系数再乘上你的记忆法术强度。正因为玩家从开局到终局都在按它，它被给了全流派<b>最长的成长曲线（10 级）</b>。</div>
+  <div class="unl"><b>等级带来的效果（含非数值的质性解锁）：</b><ul><li><b>L1</b>　基础单体投射物，命中叠 1 层认知过载</li></ul></div>
+  <table class="lv2"><tr><th class="lv">等级</th><th>稀有度</th><th>法力</th><th>伤害系数</th><th class="dcol">相比上一级</th></tr>
+    <tr><td class="lv">L1</td><td><span class="bg c">Common</span></td><td>11</td><td>8.0</td><td class="no">— 基础效果</td></tr><tr><td class="lv">L2</td><td><span class="bg c">Common</span></td><td>13</td><td>8.4</td><td>法力 +2 · 伤害系数 +0.4</td></tr><tr><td class="lv">L3</td><td><span class="bg c">Common</span></td><td>15</td><td>8.9</td><td>法力 +2 · 伤害系数 +0.5</td></tr><tr><td class="lv">L4</td><td><span class="bg u">Uncommon</span></td><td>17</td><td>9.3</td><td>法力 +2 · 伤害系数 +0.4</td></tr><tr><td class="lv">L5</td><td><span class="bg u">Uncommon</span></td><td>19</td><td>9.8</td><td>法力 +2 · 伤害系数 +0.5</td></tr><tr><td class="lv">L6</td><td><span class="bg r">Rare</span></td><td>21</td><td>10.2</td><td>法力 +2 · 伤害系数 +0.4</td></tr><tr><td class="lv">L7</td><td><span class="bg r">Rare</span></td><td>23</td><td>10.7</td><td>法力 +2 · 伤害系数 +0.5</td></tr><tr><td class="lv">L8</td><td><span class="bg e">Epic</span></td><td>25</td><td>11.1</td><td>法力 +2 · 伤害系数 +0.4</td></tr><tr><td class="lv">L9</td><td><span class="bg e">Epic</span></td><td>27</td><td>11.6</td><td>法力 +2 · 伤害系数 +0.5</td></tr><tr><td class="lv">L10</td><td><span class="bg l">Legendary</span></td><td>29</td><td>12.0</td><td>法力 +2 · 伤害系数 +0.4</td></tr></table></section><section class="sp">
+  <header><span class="nm">无尽忆域</span><code>endless_realm</code>
+    <span class="bg e">起始 Epic</span>
+    <span class="bg mx">最大 <b>10</b> 级</span>
+    <span class="meta">冷却 120.0s · 60 tick · 满级法力 <b>183</b> · 满级 1.49 法力/秒</span></header>
+  <div class="prose">终局领域。张开一片<b>无尽忆域</b>，域内的敌人被持续压制。与忆海同为 EPIC / 10 级，但它只有两条轴（半径 / 持续），所以满级法力<b>略低于忆海</b> —— 同为终局，强度与代价要对得上。</div>
+  <div class="unl"><b>等级带来的效果（含非数值的质性解锁）：</b><ul><li><b>L1</b>　张开无尽忆域，域内敌人被持续压制</li></ul></div>
+  <table class="lv2"><tr><th class="lv">等级</th><th>稀有度</th><th>法力</th><th>半径（格）</th><th>持续（秒）</th><th class="dcol">相比上一级</th></tr>
+    <tr><td class="lv">L1</td><td><span class="bg e">Epic</span></td><td>66</td><td>10.0 格</td><td>6 秒</td><td class="no">— 基础效果</td></tr><tr><td class="lv">L2</td><td><span class="bg e">Epic</span></td><td>79</td><td>10.4 格</td><td>6 秒</td><td>法力 +13 · 半径 +0.4</td></tr><tr><td class="lv">L3</td><td><span class="bg e">Epic</span></td><td>92</td><td>10.9 格</td><td>7 秒</td><td>法力 +13 · 半径 +0.5 · 持续 +1</td></tr><tr><td class="lv">L4</td><td><span class="bg e">Epic</span></td><td>105</td><td>11.3 格</td><td>7 秒</td><td>法力 +13 · 半径 +0.4</td></tr><tr><td class="lv">L5</td><td><span class="bg e">Epic</span></td><td>118</td><td>11.8 格</td><td>8 秒</td><td>法力 +13 · 半径 +0.5 · 持续 +1</td></tr><tr><td class="lv">L6</td><td><span class="bg e">Epic</span></td><td>131</td><td>12.2 格</td><td>8 秒</td><td>法力 +13 · 半径 +0.4</td></tr><tr><td class="lv">L7</td><td><span class="bg l">Legendary</span></td><td>144</td><td>12.7 格</td><td>9 秒</td><td>法力 +13 · 半径 +0.5 · 持续 +1</td></tr><tr><td class="lv">L8</td><td><span class="bg l">Legendary</span></td><td>157</td><td>13.1 格</td><td>9 秒</td><td>法力 +13 · 半径 +0.4</td></tr><tr><td class="lv">L9</td><td><span class="bg l">Legendary</span></td><td>170</td><td>13.6 格</td><td>10 秒</td><td>法力 +13 · 半径 +0.5 · 持续 +1</td></tr><tr><td class="lv">L10</td><td><span class="bg l">Legendary</span></td><td>183</td><td>14.0 格</td><td>10 秒</td><td>法力 +13 · 半径 +0.4</td></tr></table></section><section class="sp">
+  <header><span class="nm">碎忆</span><code>memory_shard</code>
+    <span class="bg c">起始 Common</span>
+    <span class="bg mx">最大 <b>8</b> 级</span>
+    <span class="meta">冷却 4.0s · 瞬发 · 满级法力 <b>62</b> · 满级 15.50 法力/秒</span></header>
+  <div class="prose"><b>主力 AOE</b>。向前方锥形范围打出一片记忆碎片，命中多个目标并击退，同时给自己补一格<b>临时忆格</b>（"边打边回资源"）。它是低阶法术里唯一承担 AOE 职责的，所以等级给到 8。</div>
+  <div class="unl"><b>等级带来的效果（含非数值的质性解锁）：</b><ul><li><b>L1</b>　锥形 AOE + 击退 + 自身获得 1 格临时忆格</li></ul></div>
+  <table class="lv2"><tr><th class="lv">等级</th><th>稀有度</th><th>法力</th><th>伤害系数</th><th>击退（格）</th><th>临时格时长（秒）</th><th class="dcol">相比上一级</th></tr>
+    <tr><td class="lv">L1</td><td><span class="bg c">Common</span></td><td>27</td><td>8.0</td><td>2.00 格</td><td>15 秒</td><td class="no">— 基础效果</td></tr><tr><td class="lv">L2</td><td><span class="bg c">Common</span></td><td>32</td><td>9.1</td><td>2.14 格</td><td>19 秒</td><td>法力 +5 · 伤害系数 +1.1 · 击退 +0.14 · 临时格时长 +4</td></tr><tr><td class="lv">L3</td><td><span class="bg u">Uncommon</span></td><td>37</td><td>10.3</td><td>2.29 格</td><td>22 秒</td><td>法力 +5 · 伤害系数 +1.2 · 击退 +0.15 · 临时格时长 +3</td></tr><tr><td class="lv">L4</td><td><span class="bg u">Uncommon</span></td><td>42</td><td>11.4</td><td>2.43 格</td><td>26 秒</td><td>法力 +5 · 伤害系数 +1.1 · 击退 +0.14 · 临时格时长 +4</td></tr><tr><td class="lv">L5</td><td><span class="bg r">Rare</span></td><td>47</td><td>12.6</td><td>2.57 格</td><td>29 秒</td><td>法力 +5 · 伤害系数 +1.2 · 击退 +0.14 · 临时格时长 +3</td></tr><tr><td class="lv">L6</td><td><span class="bg r">Rare</span></td><td>52</td><td>13.7</td><td>2.71 格</td><td>33 秒</td><td>法力 +5 · 伤害系数 +1.1 · 击退 +0.14 · 临时格时长 +4</td></tr><tr><td class="lv">L7</td><td><span class="bg e">Epic</span></td><td>57</td><td>14.9</td><td>2.86 格</td><td>36 秒</td><td>法力 +5 · 伤害系数 +1.2 · 击退 +0.15 · 临时格时长 +3</td></tr><tr><td class="lv">L8</td><td><span class="bg l">Legendary</span></td><td>62</td><td>16.0</td><td>3.00 格</td><td>40 秒</td><td>法力 +5 · 伤害系数 +1.1 · 击退 +0.14 · 临时格时长 +4</td></tr></table></section><section class="sp">
+  <header><span class="nm">认知崩坏</span><code>cognitive_collapse</code>
+    <span class="bg e">起始 Epic</span>
+    <span class="bg mx">最大 <b>8</b> 级</span>
+    <span class="meta">冷却 12.0s · 瞬发 · 满级法力 <b>120</b> · 满级 10.00 法力/秒</span></header>
+  <div class="prose"><b>引爆核心</b>。把目标身上所有「认知过载」层数一次性引爆，层数越多伤害越高，并附带长时间眩晕。<br>⭐ 它是忆海 / 碎忆那套"叠层"玩法的收益出口 —— 每层伤害直接决定整个流派的爆发上限。<b>L4 起</b>还会给目标挂上"后续加成"，让它在被引爆后一段时间内受到更多伤害。</div>
+  <div class="unl"><b>等级带来的效果（含非数值的质性解锁）：</b><ul><li><b>L1</b>　引爆全部认知过载层数 + 长时间眩晕</li><li><b>L4</b>　⭐ 引爆后附加<b>后续加成</b>（目标受到伤害提高）</li><li><b>L5</b>　后续加成提高到 0.20</li></ul></div>
+  <table class="lv2"><tr><th class="lv">等级</th><th>稀有度</th><th>法力</th><th>每层伤害</th><th>眩晕（tick）</th><th>后续加成</th><th class="dcol">相比上一级</th></tr>
+    <tr><td class="lv">L1</td><td><span class="bg e">Epic</span></td><td>50</td><td>8.0</td><td>60 tick</td><td>0.000</td><td class="no">— 基础效果</td></tr><tr><td class="lv">L2</td><td><span class="bg e">Epic</span></td><td>60</td><td>8.6</td><td>66 tick</td><td>0.029</td><td>法力 +10 · 每层伤害 +0.6 · 眩晕 +6 · 后续加成 +0.029</td></tr><tr><td class="lv">L3</td><td><span class="bg e">Epic</span></td><td>70</td><td>9.1</td><td>71 tick</td><td>0.057</td><td>法力 +10 · 每层伤害 +0.5 · 眩晕 +5 · 后续加成 +0.028</td></tr><tr><td class="lv">L4</td><td><span class="bg e">Epic</span></td><td>80</td><td>9.7</td><td>77 tick</td><td>0.086</td><td>法力 +10 · 每层伤害 +0.6 · 眩晕 +6 · 后续加成 +0.029</td></tr><tr><td class="lv">L5</td><td><span class="bg l">Legendary</span></td><td>90</td><td>10.3</td><td>83 tick</td><td>0.114</td><td>法力 +10 · 每层伤害 +0.6 · 眩晕 +6 · 后续加成 +0.028</td></tr><tr><td class="lv">L6</td><td><span class="bg l">Legendary</span></td><td>100</td><td>10.9</td><td>89 tick</td><td>0.143</td><td>法力 +10 · 每层伤害 +0.6 · 眩晕 +6 · 后续加成 +0.029</td></tr><tr><td class="lv">L7</td><td><span class="bg l">Legendary</span></td><td>110</td><td>11.4</td><td>94 tick</td><td>0.171</td><td>法力 +10 · 每层伤害 +0.5 · 眩晕 +5 · 后续加成 +0.028</td></tr><tr><td class="lv">L8</td><td><span class="bg l">Legendary</span></td><td>120</td><td>12.0</td><td>100 tick</td><td>0.200</td><td>法力 +10 · 每层伤害 +0.6 · 眩晕 +6 · 后续加成 +0.029</td></tr></table></section><section class="sp">
+  <header><span class="nm">遗忘诅咒</span><code>curse_of_oblivion</code>
+    <span class="bg r">起始 Rare</span>
+    <span class="bg mx">最大 <b>8</b> 级</span>
+    <span class="meta">冷却 25.0s · 20 tick · 满级法力 <b>146</b> · 满级 5.62 法力/秒</span></header>
+  <div class="prose">「遗忘」概念的<b>骨架法术</b>。张开一片领域，其中每隔一段时间就摘掉敌人一项能力，同时降低它们造成的伤害。领域会跟随目标移动，离开后残留一小段时间。四条轴 + 领域控制的核心定位，给到 8 级。</div>
+  <div class="unl"><b>等级带来的效果（含非数值的质性解锁）：</b><ul><li><b>L1</b>　张开遗忘诅咒领域；领域内敌人周期性被剥夺能力并减伤</li></ul></div>
+  <table class="lv2"><tr><th class="lv">等级</th><th>稀有度</th><th>法力</th><th>半径（格）</th><th>持续（秒）</th><th>间隔（tick）</th><th>目标减伤</th><th class="dcol">相比上一级</th></tr>
+    <tr><td class="lv">L1</td><td><span class="bg r">Rare</span></td><td>62</td><td>5.0 格</td><td>8 秒</td><td>40 tick</td><td>0.150</td><td class="no">— 基础效果</td></tr><tr><td class="lv">L2</td><td><span class="bg r">Rare</span></td><td>74</td><td>5.3 格</td><td>9 秒</td><td>37 tick</td><td>0.164</td><td>法力 +12 · 半径 +0.3 · 持续 +1 · 间隔 +-3 · 目标减伤 +0.014</td></tr><tr><td class="lv">L3</td><td><span class="bg r">Rare</span></td><td>86</td><td>5.6 格</td><td>10 秒</td><td>34 tick</td><td>0.179</td><td>法力 +12 · 半径 +0.3 · 持续 +1 · 间隔 +-3 · 目标减伤 +0.015</td></tr><tr><td class="lv">L4</td><td><span class="bg e">Epic</span></td><td>98</td><td>5.9 格</td><td>11 秒</td><td>31 tick</td><td>0.193</td><td>法力 +12 · 半径 +0.3 · 持续 +1 · 间隔 +-3 · 目标减伤 +0.014</td></tr><tr><td class="lv">L5</td><td><span class="bg e">Epic</span></td><td>110</td><td>6.1 格</td><td>12 秒</td><td>29 tick</td><td>0.207</td><td>法力 +12 · 半径 +0.2 · 持续 +1 · 间隔 +-2 · 目标减伤 +0.014</td></tr><tr><td class="lv">L6</td><td><span class="bg e">Epic</span></td><td>122</td><td>6.4 格</td><td>13 秒</td><td>26 tick</td><td>0.221</td><td>法力 +12 · 半径 +0.3 · 持续 +1 · 间隔 +-3 · 目标减伤 +0.014</td></tr><tr><td class="lv">L7</td><td><span class="bg l">Legendary</span></td><td>134</td><td>6.7 格</td><td>14 秒</td><td>23 tick</td><td>0.236</td><td>法力 +12 · 半径 +0.3 · 持续 +1 · 间隔 +-3 · 目标减伤 +0.015</td></tr><tr><td class="lv">L8</td><td><span class="bg l">Legendary</span></td><td>146</td><td>7.0 格</td><td>15 秒</td><td>20 tick</td><td>0.250</td><td>法力 +12 · 半径 +0.3 · 持续 +1 · 间隔 +-3 · 目标减伤 +0.014</td></tr></table></section><section class="sp">
+  <header><span class="nm">铭刻适应</span><code>adaptation</code>
+    <span class="bg r">起始 Rare</span>
+    <span class="bg mx">最大 <b>8</b> 级</span>
+    <span class="meta">冷却 30.0s · 瞬发 · 满级法力 <b>107</b> · 满级 3.57 法力/秒</span></header>
+  <div class="prose">防御核心。铭刻见过的攻击类型，之后对同类伤害产生<b>减伤</b>；若伤害集中在同一学派，减伤会额外提高（"专精"路径）。全流派<b>轴最多</b>的法术（4 条），每一级都有实打实的收益，所以给到 8 级。</div>
+  <div class="unl"><b>等级带来的效果（含非数值的质性解锁）：</b><ul><li><b>L1</b>　开启适应光环：对已铭刻的伤害类型减伤</li></ul></div>
+  <table class="lv2"><tr><th class="lv">等级</th><th>稀有度</th><th>法力</th><th>铭刻（秒）</th><th>增益（秒）</th><th>专精减伤</th><th>泛用减伤</th><th class="dcol">相比上一级</th></tr>
+    <tr><td class="lv">L1</td><td><span class="bg r">Rare</span></td><td>44</td><td>8 秒</td><td>30 秒</td><td>0.300</td><td>0.150</td><td class="no">— 基础效果</td></tr><tr><td class="lv">L2</td><td><span class="bg r">Rare</span></td><td>53</td><td>9 秒</td><td>32 秒</td><td>0.329</td><td>0.161</td><td>法力 +9 · 铭刻 +1 · 增益 +2 · 专精减伤 +0.029 · 泛用减伤 +0.011</td></tr><tr><td class="lv">L3</td><td><span class="bg r">Rare</span></td><td>62</td><td>9 秒</td><td>33 秒</td><td>0.357</td><td>0.173</td><td>法力 +9 · 增益 +1 · 专精减伤 +0.028 · 泛用减伤 +0.012</td></tr><tr><td class="lv">L4</td><td><span class="bg e">Epic</span></td><td>71</td><td>10 秒</td><td>35 秒</td><td>0.386</td><td>0.184</td><td>法力 +9 · 铭刻 +1 · 增益 +2 · 专精减伤 +0.029 · 泛用减伤 +0.011</td></tr><tr><td class="lv">L5</td><td><span class="bg e">Epic</span></td><td>80</td><td>10 秒</td><td>37 秒</td><td>0.414</td><td>0.196</td><td>法力 +9 · 增益 +2 · 专精减伤 +0.028 · 泛用减伤 +0.012</td></tr><tr><td class="lv">L6</td><td><span class="bg e">Epic</span></td><td>89</td><td>11 秒</td><td>39 秒</td><td>0.443</td><td>0.207</td><td>法力 +9 · 铭刻 +1 · 增益 +2 · 专精减伤 +0.029 · 泛用减伤 +0.011</td></tr><tr><td class="lv">L7</td><td><span class="bg l">Legendary</span></td><td>98</td><td>11 秒</td><td>40 秒</td><td>0.471</td><td>0.219</td><td>法力 +9 · 增益 +1 · 专精减伤 +0.028 · 泛用减伤 +0.012</td></tr><tr><td class="lv">L8</td><td><span class="bg l">Legendary</span></td><td>107</td><td>12 秒</td><td>42 秒</td><td>0.500</td><td>0.230</td><td>法力 +9 · 铭刻 +1 · 增益 +2 · 专精减伤 +0.029 · 泛用减伤 +0.011</td></tr></table></section><section class="sp">
+  <header><span class="nm">既视感</span><code>deja_vu</code>
+    <span class="bg e">起始 Epic</span>
+    <span class="bg mx">最大 <b>6</b> 级</span>
+    <span class="meta">冷却 30.0s · 瞬发 · 满级法力 <b>100</b> · 满级 3.33 法力/秒</span></header>
+  <div class="prose">重演型。记录你自己最近施放过的法术，然后<b>再放一次</b>。记忆库里存的法术越多，重演威力越低（越"贪心"越弱）。威力天花板本就低（重演不可能比原版强），所以 6 级封顶。</div>
+  <div class="unl"><b>等级带来的效果（含非数值的质性解锁）：</b><ul><li><b>L1</b>　重演记忆库中最近的一个法术</li></ul></div>
+  <table class="lv2"><tr><th class="lv">等级</th><th>稀有度</th><th>法力</th><th>记录窗口（秒）</th><th>重演威力</th><th class="dcol">相比上一级</th></tr>
+    <tr><td class="lv">L1</td><td><span class="bg e">Epic</span></td><td>50</td><td>60 秒</td><td>0.800</td><td class="no">— 基础效果</td></tr><tr><td class="lv">L2</td><td><span class="bg e">Epic</span></td><td>60</td><td>72 秒</td><td>0.830</td><td>法力 +10 · 记录窗口 +12 · 重演威力 +0.030</td></tr><tr><td class="lv">L3</td><td><span class="bg e">Epic</span></td><td>70</td><td>84 秒</td><td>0.860</td><td>法力 +10 · 记录窗口 +12 · 重演威力 +0.030</td></tr><tr><td class="lv">L4</td><td><span class="bg l">Legendary</span></td><td>80</td><td>96 秒</td><td>0.890</td><td>法力 +10 · 记录窗口 +12 · 重演威力 +0.030</td></tr><tr><td class="lv">L5</td><td><span class="bg l">Legendary</span></td><td>90</td><td>108 秒</td><td>0.920</td><td>法力 +10 · 记录窗口 +12 · 重演威力 +0.030</td></tr><tr><td class="lv">L6</td><td><span class="bg l">Legendary</span></td><td>100</td><td>120 秒</td><td>0.950</td><td>法力 +10 · 记录窗口 +12 · 重演威力 +0.030</td></tr></table></section><section class="sp">
+  <header><span class="nm">残迹回溯</span><code>retrograde</code>
+    <span class="bg u">起始 Uncommon</span>
+    <span class="bg mx">最大 <b>6</b> 级</span>
+    <span class="meta">冷却 12.0s · 瞬发 · 满级法力 <b>70</b> · 满级 5.83 法力/秒</span></header>
+  <div class="prose">侦察 + 增伤的<b>辅助技</b>。回溯一片区域内敌人最近的行动痕迹，被标记的目标受到的伤害提高。半径、回溯窗口、标记加成三条轴同步成长。</div>
+  <div class="unl"><b>等级带来的效果（含非数值的质性解锁）：</b><ul><li><b>L1</b>　基础标记：范围内敌人被回溯并标记</li></ul></div>
+  <table class="lv2"><tr><th class="lv">等级</th><th>稀有度</th><th>法力</th><th>半径（格）</th><th>回溯窗口（秒）</th><th>标记加成</th><th class="dcol">相比上一级</th></tr>
+    <tr><td class="lv">L1</td><td><span class="bg u">Uncommon</span></td><td>35</td><td>12.0 格</td><td>30 秒</td><td>0.150</td><td class="no">— 基础效果</td></tr><tr><td class="lv">L2</td><td><span class="bg u">Uncommon</span></td><td>42</td><td>12.8 格</td><td>34 秒</td><td>0.174</td><td>法力 +7 · 半径 +0.8 · 回溯窗口 +4 · 标记加成 +0.024</td></tr><tr><td class="lv">L3</td><td><span class="bg r">Rare</span></td><td>49</td><td>13.6 格</td><td>38 秒</td><td>0.198</td><td>法力 +7 · 半径 +0.8 · 回溯窗口 +4 · 标记加成 +0.024</td></tr><tr><td class="lv">L4</td><td><span class="bg e">Epic</span></td><td>56</td><td>14.4 格</td><td>42 秒</td><td>0.222</td><td>法力 +7 · 半径 +0.8 · 回溯窗口 +4 · 标记加成 +0.024</td></tr><tr><td class="lv">L5</td><td><span class="bg e">Epic</span></td><td>63</td><td>15.2 格</td><td>46 秒</td><td>0.246</td><td>法力 +7 · 半径 +0.8 · 回溯窗口 +4 · 标记加成 +0.024</td></tr><tr><td class="lv">L6</td><td><span class="bg l">Legendary</span></td><td>70</td><td>16.0 格</td><td>50 秒</td><td>0.270</td><td>法力 +7 · 半径 +0.8 · 回溯窗口 +4 · 标记加成 +0.024</td></tr></table></section><section class="sp">
+  <header><span class="nm">记忆掠夺</span><code>memory_theft</code>
+    <span class="bg e">起始 Epic</span>
+    <span class="bg mx">最大 <b>6</b> 级</span>
+    <span class="meta">冷却 45.0s · 40 tick · 满级法力 <b>120</b> · 满级 2.55 法力/秒</span></header>
+  <div class="prose">剥夺型。长吟后<b>摘走目标身上的特质</b>并写进自己的忆格。对精英怪有额外的惩罚（剥夺更彻底）。⭐ 满级时偷来的特质会写进<b>永久忆格</b> —— 不会腐坏，这是等级带来的质性跃迁。</div>
+  <div class="unl"><b>等级带来的效果（含非数值的质性解锁）：</b><ul><li><b>L1</b>　摘取目标特质写入忆格</li><li><b>L2</b>　⭐ 对<b>精英怪</b>的剥夺惩罚减半</li><li><b>L5</b>　⭐ 偷来的特质写入<b>永久忆格</b>（不腐坏）</li></ul></div>
+  <table class="lv2"><tr><th class="lv">等级</th><th>稀有度</th><th>法力</th><th>吟唱（tick）</th><th>掠夺时长</th><th>掠夺个数</th><th class="dcol">相比上一级</th></tr>
+    <tr><td class="lv">L1</td><td><span class="bg e">Epic</span></td><td>60</td><td>40 tick</td><td>1.50×</td><td>1 个</td><td class="no">— 基础效果</td></tr><tr><td class="lv">L2</td><td><span class="bg e">Epic</span></td><td>72</td><td>36 tick</td><td>1.60×</td><td>1 个</td><td>法力 +12 · 吟唱 +-4 · 掠夺时长 +0.10</td></tr><tr><td class="lv">L3</td><td><span class="bg e">Epic</span></td><td>84</td><td>32 tick</td><td>1.70×</td><td>1 个</td><td>法力 +12 · 吟唱 +-4 · 掠夺时长 +0.10</td></tr><tr><td class="lv">L4</td><td><span class="bg l">Legendary</span></td><td>96</td><td>28 tick</td><td>1.80×</td><td>2 个</td><td>法力 +12 · 吟唱 +-4 · 掠夺时长 +0.10 · 掠夺个数 +1</td></tr><tr><td class="lv">L5</td><td><span class="bg l">Legendary</span></td><td>108</td><td>24 tick</td><td>1.90×</td><td>2 个</td><td>法力 +12 · 吟唱 +-4 · 掠夺时长 +0.10</td></tr><tr><td class="lv">L6</td><td><span class="bg l">Legendary</span></td><td>120</td><td>20 tick</td><td>2.00×</td><td>2 个</td><td>法力 +12 · 吟唱 +-4 · 掠夺时长 +0.10</td></tr></table></section><section class="sp">
+  <header><span class="nm">集体遗忘</span><code>mass_amnesia</code>
+    <span class="bg e">起始 Epic</span>
+    <span class="bg mx">最大 <b>6</b> 级</span>
+    <span class="meta">冷却 40.0s · 40 tick · 满级法力 <b>130</b> · 满级 3.10 法力/秒</span></header>
+  <div class="prose">大范围控制。对一片区域内的所有敌人同时施加遗忘。⭐ 高等级带来两个质性变化：L4 起<b>不再误伤友军</b>，L5 起目标会<b>延迟锁定</b>（更难逃出范围）。</div>
+  <div class="unl"><b>等级带来的效果（含非数值的质性解锁）：</b><ul><li><b>L1</b>　范围内所有敌人被遗忘</li><li><b>L4</b>　⭐ <b>保护友军</b> —— 不再误伤自己人</li><li><b>L5</b>　⭐ 目标<b>延迟锁定</b>，更难逃出范围</li></ul></div>
+  <table class="lv2"><tr><th class="lv">等级</th><th>稀有度</th><th>法力</th><th>半径（格）</th><th>遗忘时长（秒）</th><th>迟缓等级</th><th class="dcol">相比上一级</th></tr>
+    <tr><td class="lv">L1</td><td><span class="bg e">Epic</span></td><td>65</td><td>8.0 格</td><td>6 秒</td><td>-1 级</td><td class="no">— 基础效果</td></tr><tr><td class="lv">L2</td><td><span class="bg e">Epic</span></td><td>78</td><td>8.8 格</td><td>7 秒</td><td>0 级</td><td>法力 +13 · 半径 +0.8 · 遗忘时长 +1 · 迟缓等级 +1</td></tr><tr><td class="lv">L3</td><td><span class="bg e">Epic</span></td><td>91</td><td>9.6 格</td><td>8 秒</td><td>0 级</td><td>法力 +13 · 半径 +0.8 · 遗忘时长 +1</td></tr><tr><td class="lv">L4</td><td><span class="bg l">Legendary</span></td><td>104</td><td>10.4 格</td><td>10 秒</td><td>1 级</td><td>法力 +13 · 半径 +0.8 · 遗忘时长 +2 · 迟缓等级 +1</td></tr><tr><td class="lv">L5</td><td><span class="bg l">Legendary</span></td><td>117</td><td>11.2 格</td><td>11 秒</td><td>1 级</td><td>法力 +13 · 半径 +0.8 · 遗忘时长 +1</td></tr><tr><td class="lv">L6</td><td><span class="bg l">Legendary</span></td><td>130</td><td>12.0 格</td><td>12 秒</td><td>2 级</td><td>法力 +13 · 半径 +0.8 · 遗忘时长 +1 · 迟缓等级 +1</td></tr></table></section><section class="sp">
+  <header><span class="nm">失忆</span><code>amnesia</code>
+    <span class="bg r">起始 Rare</span>
+    <span class="bg mx">最大 <b>5</b> 级</span>
+    <span class="meta">冷却 12.0s · 瞬发 · 满级法力 <b>90</b> · 满级 7.50 法力/秒</span></header>
+  <div class="prose">中阶主力控制。抹掉目标的特殊能力并使其<b>眩晕</b>，是"先控住再打"的标准手段。满级时还能额外影响<b>第二个目标</b> —— 这是等级带来的质性变化，不只是数字。</div>
+  <div class="unl"><b>等级带来的效果（含非数值的质性解锁）：</b><ul><li><b>L1</b>　抹除目标特殊能力 + 眩晕</li><li><b>L5</b>　⭐ 可额外影响<b>第二个目标</b></li></ul></div>
+  <table class="lv2"><tr><th class="lv">等级</th><th>稀有度</th><th>法力</th><th>遗忘时长（秒）</th><th>眩晕（tick）</th><th class="dcol">相比上一级</th></tr>
+    <tr><td class="lv">L1</td><td><span class="bg r">Rare</span></td><td>50</td><td>4 秒</td><td>30 tick</td><td class="no">— 基础效果</td></tr><tr><td class="lv">L2</td><td><span class="bg r">Rare</span></td><td>60</td><td>5 秒</td><td>33 tick</td><td>法力 +10 · 遗忘时长 +1 · 眩晕 +3</td></tr><tr><td class="lv">L3</td><td><span class="bg e">Epic</span></td><td>70</td><td>6 秒</td><td>35 tick</td><td>法力 +10 · 遗忘时长 +1 · 眩晕 +2</td></tr><tr><td class="lv">L4</td><td><span class="bg l">Legendary</span></td><td>80</td><td>7 秒</td><td>38 tick</td><td>法力 +10 · 遗忘时长 +1 · 眩晕 +3</td></tr><tr><td class="lv">L5</td><td><span class="bg l">Legendary</span></td><td>90</td><td>8 秒</td><td>40 tick</td><td>法力 +10 · 遗忘时长 +1 · 眩晕 +2</td></tr></table></section><section class="sp">
+  <header><span class="nm">帧缚</span><code>framebind</code>
+    <span class="bg r">起始 Rare</span>
+    <span class="bg mx">最大 <b>5</b> 级</span>
+    <span class="meta">冷却 20.0s · 瞬发 · 满级法力 <b>90</b> · 满级 4.50 法力/秒</span></header>
+  <div class="prose">中阶控制。把目标钉在某一帧里<b>冻结</b>，一旦它在冻结期间移动就会受到伤害。控制时长本身不宜过长，所以 5 级封顶。</div>
+  <div class="unl"><b>等级带来的效果（含非数值的质性解锁）：</b><ul><li><b>L1</b>　冻结目标；目标违帧移动则受伤</li></ul></div>
+  <table class="lv2"><tr><th class="lv">等级</th><th>稀有度</th><th>法力</th><th>持续（秒）</th><th>违帧伤害</th><th class="dcol">相比上一级</th></tr>
+    <tr><td class="lv">L1</td><td><span class="bg r">Rare</span></td><td>50</td><td>5 秒</td><td>6.0</td><td class="no">— 基础效果</td></tr><tr><td class="lv">L2</td><td><span class="bg r">Rare</span></td><td>60</td><td>6 秒</td><td>7.5</td><td>法力 +10 · 持续 +1 · 违帧伤害 +1.5</td></tr><tr><td class="lv">L3</td><td><span class="bg e">Epic</span></td><td>70</td><td>7 秒</td><td>9.0</td><td>法力 +10 · 持续 +1 · 违帧伤害 +1.5</td></tr><tr><td class="lv">L4</td><td><span class="bg l">Legendary</span></td><td>80</td><td>8 秒</td><td>10.5</td><td>法力 +10 · 持续 +1 · 违帧伤害 +1.5</td></tr><tr><td class="lv">L5</td><td><span class="bg l">Legendary</span></td><td>90</td><td>9 秒</td><td>12.0</td><td>法力 +10 · 持续 +1 · 违帧伤害 +1.5</td></tr></table></section><section class="sp">
+  <header><span class="nm">忆格扩张</span><code>expand_mind</code>
+    <span class="bg r">起始 Rare</span>
+    <span class="bg mx">最大 <b>5</b> 级</span>
+    <span class="meta">冷却 30.0s · 瞬发 · 满级法力 <b>90</b> · 满级 3.00 法力/秒</span></header>
+  <div class="prose">临时开启额外忆格，并从高等级起<b>减免忆格带来的惩罚</b>。⭐ 「临时忆格」是全流派最强的资源，所以等级被<b>刻意压低</b> —— 多一级就是多一格。它真正的价值在高等级：不是格子更多，而是<b>惩罚更小</b>。</div>
+  <div class="unl"><b>等级带来的效果（含非数值的质性解锁）：</b><ul><li><b>L1</b>　获得额外临时忆格</li><li><b>L4</b>　⭐ 忆格带来的<b>施法速度惩罚减半</b></li><li><b>L5</b>　⭐ 忆格带来的<b>法力惩罚减半</b></li></ul></div>
+  <table class="lv2"><tr><th class="lv">等级</th><th>稀有度</th><th>法力</th><th>临时忆格</th><th>持续（秒）</th><th class="dcol">相比上一级</th></tr>
+    <tr><td class="lv">L1</td><td><span class="bg r">Rare</span></td><td>50</td><td>2 格</td><td>30 秒</td><td class="no">— 基础效果</td></tr><tr><td class="lv">L2</td><td><span class="bg r">Rare</span></td><td>60</td><td>3 格</td><td>38 秒</td><td>法力 +10 · 临时忆格 +1 · 持续 +8</td></tr><tr><td class="lv">L3</td><td><span class="bg e">Epic</span></td><td>70</td><td>3 格</td><td>45 秒</td><td>法力 +10 · 持续 +7</td></tr><tr><td class="lv">L4</td><td><span class="bg l">Legendary</span></td><td>80</td><td>4 格</td><td>53 秒</td><td>法力 +10 · 临时忆格 +1 · 持续 +8</td></tr><tr><td class="lv">L5</td><td><span class="bg l">Legendary</span></td><td>90</td><td>4 格</td><td>60 秒</td><td>法力 +10 · 持续 +7</td></tr></table></section><section class="sp">
+  <header><span class="nm">痛忆</span><code>encode_pain</code>
+    <span class="bg u">起始 Uncommon</span>
+    <span class="bg mx">最大 <b>5</b> 级</span>
+    <span class="meta">冷却 8.0s · 6 tick · 满级法力 <b>55</b> · 满级 6.63 法力/秒</span></header>
+  <div class="prose">「写入 · 痛忆」—— 开启一个<b>反打窗口</b>，期间你受到的每一次攻击都会当场原样打回给攻击者。面对高爆发敌人时先开窗口，然后<b>主动去挨打</b>。⚠️ 奉还走标准伤害管线，<b>会被护甲减免</b>。</div>
+  <div class="unl"><b>等级带来的效果（含非数值的质性解锁）：</b><ul><li><b>L1</b>　开启痛忆窗口，受击即反打</li></ul></div>
+  <table class="lv2"><tr><th class="lv">等级</th><th>稀有度</th><th>法力</th><th>窗口（秒）</th><th>反打比例</th><th>反打上限（最大生命%）</th><th class="dcol">相比上一级</th></tr>
+    <tr><td class="lv">L1</td><td><span class="bg u">Uncommon</span></td><td>31</td><td>6 秒</td><td>0.50</td><td>0.60</td><td class="no">— 基础效果</td></tr><tr><td class="lv">L2</td><td><span class="bg r">Rare</span></td><td>37</td><td>7 秒</td><td>0.54</td><td>0.63</td><td>法力 +6 · 窗口 +1 · 反打比例 +0.04 · 反打上限 +0.03</td></tr><tr><td class="lv">L3</td><td><span class="bg r">Rare</span></td><td>43</td><td>8 秒</td><td>0.58</td><td>0.66</td><td>法力 +6 · 窗口 +1 · 反打比例 +0.04 · 反打上限 +0.03</td></tr><tr><td class="lv">L4</td><td><span class="bg e">Epic</span></td><td>49</td><td>9 秒</td><td>0.62</td><td>0.69</td><td>法力 +6 · 窗口 +1 · 反打比例 +0.04 · 反打上限 +0.03</td></tr><tr><td class="lv">L5</td><td><span class="bg l">Legendary</span></td><td>55</td><td>10 秒</td><td>0.66</td><td>0.72</td><td>法力 +6 · 窗口 +1 · 反打比例 +0.04 · 反打上限 +0.03</td></tr></table></section><section class="sp">
+  <header><span class="nm">窥忆</span><code>glimpse</code>
+    <span class="bg c">起始 Common</span>
+    <span class="bg mx">最大 <b>5</b> 级</span>
+    <span class="meta">冷却 2.0s · 瞬发 · 满级法力 <b>29</b> · 满级 14.50 法力/秒</span></header>
+  <div class="prose">瞬发的<b>侦察技</b>，无伤害。命中后做三件事：叠 1 层认知过载、让目标<b>发光 10 秒</b>（队友也能看到轮廓，多人里等于点名）、并画出它<b>接下来 2 秒的预测走位</b>。它的等级不涨数值，涨的是<b>你能看到多少情报</b> —— 这是全流派唯一一个「等级 = 信息量」的法术。</div>
+  <div class="unl"><b>等级带来的效果（含非数值的质性解锁）：</b><ul><li><b>L1</b>　生命 / 护甲 / 手持物 / 攻击目标 / 可借特质 / 威胁等级</li><li><b>L2</b>　+ <b>移动速度</b></li><li><b>L3</b>　+ <b>全部状态效果</b>（小字体显示，永久效果显示 ∞）</li><li><b>L4</b>　+ <b>生命百分比</b></li><li><b>L5</b>　+ <b>可被遗忘的能力清单</b> 与 <b>掉落预览</b></li></ul></div>
+  <table class="lv2"><tr><th class="lv">等级</th><th>稀有度</th><th>法力</th><th>情报档位</th><th class="dcol">相比上一级</th></tr>
+    <tr><td class="lv">L1</td><td><span class="bg c">Common</span></td><td>17</td><td>1 / 5</td><td class="no">— 基础效果</td></tr><tr><td class="lv">L2</td><td><span class="bg u">Uncommon</span></td><td>20</td><td>2 / 5</td><td>法力 +3 · 情报档位 +1</td></tr><tr><td class="lv">L3</td><td><span class="bg r">Rare</span></td><td>23</td><td>3 / 5</td><td>法力 +3 · 情报档位 +1</td></tr><tr><td class="lv">L4</td><td><span class="bg e">Epic</span></td><td>26</td><td>4 / 5</td><td>法力 +3 · 情报档位 +1</td></tr><tr><td class="lv">L5</td><td><span class="bg l">Legendary</span></td><td>29</td><td>5 / 5</td><td>法力 +3 · 情报档位 +1</td></tr></table></section><section class="sp">
+  <header><span class="nm">献忆</span><code>oblation</code>
+    <span class="bg u">起始 Uncommon</span>
+    <span class="bg mx">最大 <b>4</b> 级</span>
+    <span class="meta">冷却 25.0s · 瞬发 · 满级法力 <b>55</b> · 满级 2.20 法力/秒</span></header>
+  <div class="prose">短时间的<b>施法加速</b>。献出一段记忆，换取窗口期内更快的吟唱速度。窗口短、冷却长，是"关键时刻抢一手"的定位。</div>
+  <div class="unl"><b>等级带来的效果（含非数值的质性解锁）：</b><ul><li><b>L1</b>　开启献忆窗口，窗口内施法速度提升</li></ul></div>
+  <table class="lv2"><tr><th class="lv">等级</th><th>稀有度</th><th>法力</th><th>窗口（秒）</th><th>施法速度</th><th class="dcol">相比上一级</th></tr>
+    <tr><td class="lv">L1</td><td><span class="bg u">Uncommon</span></td><td>34</td><td>10 秒</td><td>1.150×</td><td class="no">— 基础效果</td></tr><tr><td class="lv">L2</td><td><span class="bg r">Rare</span></td><td>41</td><td>11 秒</td><td>1.190×</td><td>法力 +7 · 窗口 +1 · 施法速度 +0.040</td></tr><tr><td class="lv">L3</td><td><span class="bg e">Epic</span></td><td>48</td><td>13 秒</td><td>1.230×</td><td>法力 +7 · 窗口 +2 · 施法速度 +0.040</td></tr><tr><td class="lv">L4</td><td><span class="bg l">Legendary</span></td><td>55</td><td>14 秒</td><td>1.270×</td><td>法力 +7 · 窗口 +1 · 施法速度 +0.040</td></tr></table></section><section class="sp">
+  <header><span class="nm">质忆</span><code>encode_trait</code>
+    <span class="bg u">起始 Uncommon</span>
+    <span class="bg mx">最大 <b>3</b> 级</span>
+    <span class="meta">冷却 5.0s · 16 tick · 满级法力 <b>55</b> · 满级 9.48 法力/秒</span></header>
+  <div class="prose">「写入 · 质忆」—— 从目标身上<b>借一个特质</b>写进自己的忆格，之后可以释放来使用它。BOSS 与无可借之物的生物会降级为「通用记忆」。只有「记忆时长」一条成长轴，所以等级压到 3。</div>
+  <div class="unl"><b>等级带来的效果（含非数值的质性解锁）：</b><ul><li><b>L1</b>　写入 1 条特质记忆</li></ul></div>
+  <table class="lv2"><tr><th class="lv">等级</th><th>稀有度</th><th>法力</th><th>记忆时长（秒）</th><th class="dcol">相比上一级</th></tr>
+    <tr><td class="lv">L1</td><td><span class="bg u">Uncommon</span></td><td>39</td><td>30 秒</td><td class="no">— 基础效果</td></tr><tr><td class="lv">L2</td><td><span class="bg e">Epic</span></td><td>47</td><td>45 秒</td><td>法力 +8 · 记忆时长 +15</td></tr><tr><td class="lv">L3</td><td><span class="bg l">Legendary</span></td><td>55</td><td>60 秒</td><td>法力 +8 · 记忆时长 +15</td></tr></table></section><section class="sp">
+  <header><span class="nm">走马灯</span><code>recollection</code>
+    <span class="bg r">起始 Rare</span>
+    <span class="bg mx">最大 <b>3</b> 级</span>
+    <span class="meta">冷却 90.0s · 瞬发 · 满级法力 <b>120</b> · 满级 1.33 法力/秒</span></header>
+  <div class="prose">保命技。10 秒内<b>第一次致死会被拦截</b>，改为回复一半生命；代价是随后一段时间法力恢复下降、受到的忆海伤害提高、临时忆格清空。⭐ 保命是<b>二值</b>的（触发 / 没触发），等级只让"代价"变小 —— 所以只有 3 级。</div>
+  <div class="unl"><b>等级带来的效果（含非数值的质性解锁）：</b><ul><li><b>L1</b>　10 秒守护窗口：第一次致死被拦截，改为回复 50% 生命</li></ul></div>
+  <table class="lv2"><tr><th class="lv">等级</th><th>稀有度</th><th>法力</th><th>守护窗口（秒）</th><th>代价时长（秒）</th><th class="dcol">相比上一级</th></tr>
+    <tr><td class="lv">L1</td><td><span class="bg r">Rare</span></td><td>86</td><td>10 秒</td><td>12 秒</td><td class="no">— 基础效果</td></tr><tr><td class="lv">L2</td><td><span class="bg e">Epic</span></td><td>103</td><td>10 秒</td><td>10 秒</td><td>法力 +17 · 代价时长 +-2</td></tr><tr><td class="lv">L3</td><td><span class="bg l">Legendary</span></td><td>120</td><td>10 秒</td><td>8 秒</td><td>法力 +17 · 代价时长 +-2</td></tr></table></section><section class="sp">
+  <header><span class="nm">铭忆</span><code>engrave</code>
+    <span class="bg l">起始 Legendary</span>
+    <span class="bg mx">最大 <b>1</b> 级</span>
+    <span class="meta">冷却 15.0s · 20 tick · 满级法力 <b>100</b> · 满级 6.25 法力/秒</span></header>
+  <div class="prose">⭐ <b>只有 1 级</b>。把「容量」铭刻进自己的记忆：<b>法术上限 +2</b>，并多出一格临时忆格。写入即生效，不需要任何后续操作。<br>为什么只有 1 级：容量增益是<b>开关</b>而不是<b>曲线</b>。学会即固定 +2 槽，再给等级就等于白送法术槽，会直接击穿「法术上限」这个稀缺资源。<br>官方 7 个 1 级法术（PocketDimension / Cleanse / GreaterHeal / Counterspell / Recall / Wololo / SummonEnderChest）<b>全是昂贵的一次性工具</b>，且官方规定<b>「1 级法术必定是传说」</b> —— 铭忆的 100 法力与传说起始档正是对齐这个模式。</div>
+  <div class="unl"><b>等级带来的效果（含非数值的质性解锁）：</b><ul><li><b>L1</b>　法术上限 +2（固定）；自身获得 1 格临时忆格</li></ul></div>
+  <table class="lv2"><tr><th class="lv">等级</th><th>稀有度</th><th>法力</th><th>法术上限</th><th>临时忆格</th><th class="dcol">相比上一级</th></tr>
+    <tr><td class="lv">L1</td><td><span class="bg l">Legendary</span></td><td>100</td><td>2 格</td><td>1 格</td><td class="no">— 基础效果</td></tr></table></section>
+
+<footer>
+ 官方依据：<code>minecraft-guides.com/…/wiki/spell-progression-leveling/</code> ·
+ <code>deepwiki.com/iron431/irons-spells-n-spellbooks/2.2-mana-and-casting-mechanics</code> ·
+ 本地 ISS <code>1.20.1-3.16.3</code> sources jar 实测 113 个法术。<br>
+ ⚠️ 本文件是<b>提案</b>，尚未改动任何代码。
+</footer></div></body></html>
