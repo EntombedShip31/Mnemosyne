@@ -31,6 +31,16 @@ final class BaseContractSelfTest {
 
     private BaseContractSelfTest() {}
 
+    /**
+     * 探针法术的 {@code maxLevel}。
+     *
+     * <p>{@code MnemosyneSpell.memoryConfig} 的第三参数在 2026-09-19 起<b>强制必填</b>
+     * （刻意删掉了 2 参重载，让漏改直接编译失败）。探针法术没有任何 {@code *_BY_LEVEL}
+     * 等级数组，也永远不会被注册，所以这里取最小合法值 1 —— 与生产代码里
+     * {@code EngraveSpell}（LEGENDARY, 1 级）的写法一致。
+     */
+    private static final int PROBE_MAX_LEVEL = 1;
+
     /** 声明即检查：四个基类都能被实例化。 */
     @SuppressWarnings("unused")
     private static final AbstractSpell[] PROBES = {
@@ -49,7 +59,7 @@ final class BaseContractSelfTest {
     /** 检查 {@link EncodeSpell} 的契约：只需实现 {@code onEncode}。 */
     private static final class ProbeEncodeSpell extends EncodeSpell {
         ProbeEncodeSpell() {
-            super(memoryConfig(SpellRarity.COMMON, 1.0D));
+            super(memoryConfig(SpellRarity.COMMON, 1.0D, PROBE_MAX_LEVEL));
         }
 
         @Override
@@ -66,7 +76,7 @@ final class BaseContractSelfTest {
     /** 检查 {@link OblivionSpell} 的契约：{@code getOblivionTier} + {@code applyOblivion}。 */
     private static final class ProbeOblivionSpell extends OblivionSpell {
         ProbeOblivionSpell() {
-            super(memoryConfig(SpellRarity.COMMON, 1.0D));
+            super(memoryConfig(SpellRarity.COMMON, 1.0D, PROBE_MAX_LEVEL));
         }
 
         @Override
@@ -88,7 +98,7 @@ final class BaseContractSelfTest {
     /** 检查 {@link MnemosyneProjectileSpell} 的契约：{@code getProjectileDamage} + {@code getCastType}。 */
     private static final class ProbeProjectileSpell extends MnemosyneProjectileSpell {
         ProbeProjectileSpell() {
-            super(memoryConfig(SpellRarity.COMMON, 1.0D));
+            super(memoryConfig(SpellRarity.COMMON, 1.0D, PROBE_MAX_LEVEL));
         }
 
         @Override
@@ -110,7 +120,7 @@ final class BaseContractSelfTest {
     /** 检查 {@link MnemosyneLongCastSpell} 的契约：三个抽象方法 + {@code getCastType} 被 final 锁成 LONG。 */
     private static final class ProbeLongCastSpell extends MnemosyneLongCastSpell {
         ProbeLongCastSpell() {
-            super(memoryConfig(SpellRarity.LEGENDARY, 60.0D));
+            super(memoryConfig(SpellRarity.LEGENDARY, 60.0D, PROBE_MAX_LEVEL));
         }
 
         @Override
