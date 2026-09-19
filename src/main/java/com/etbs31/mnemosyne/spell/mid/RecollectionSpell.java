@@ -6,6 +6,7 @@ import com.etbs31.mnemosyne.registry.ModEffects;
 import com.etbs31.mnemosyne.registry.ModSounds;
 import com.etbs31.mnemosyne.spell.base.MnemosyneSpell;
 import com.etbs31.mnemosyne.util.SpellFeedback;
+import io.redspace.ironsspellbooks.api.events.SpellCooldownAddedEvent;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.api.spells.CastType;
@@ -39,14 +40,26 @@ import java.util.Optional;
  *
  * <p><b>新机制（不死图腾式）</b>
  * <ol>
- *   <li>对自己挂 10 秒「走马灯守护」—— 期间**第一次致死**会被拦截</li>
+ *   <li>对自己挂 <b>6~14 秒</b>（随等级）「走马灯守护」—— 期间**第一次致死**会被拦截</li>
  *   <li>拦截时：拉回 <b>50% 最大血量</b>，播放不死图腾的触发形态（配色换成靛蓝/品红）</li>
  *   <li>触发后立即进入「记忆空白」12~8 秒（随等级递减）：
  *       临时忆格**全部清空** / 受到的忆海法术伤害 **+50%** / 法力恢复 **−40%**</li>
- *   <li>10 秒内没死 → 守护自然消散，**不进负面状态**</li>
+ *   <li>窗口内没死 → 守护自然消散，**不进负面状态**</li>
  * </ol>
  *
- * <p><b>为什么 CD 从 10 秒拉长到 90 秒</b>：它从"骚扰技"变成了"保命技"。
+ * <p><b>⭐⭐ 5 级制，四项数值全部线性（2026-09-19 补齐）</b>
+ * <br>权威数值来自 {@code docs/忆海Mnemosyne_使用文档.html} 的走马灯卡片
+ * （与 {@code docs/tech/13_数值总表.md} 的旧 3 级制<b>不一致</b>，以使用文档为准 ——
+ * 玩家与 lang 都按 5 级制写的）。设计手法：<b>把旧的固定值当作 Lv3 中点</b>做线性展开，
+ * 中等等级手感不变，低/高等级各自获得区分度。
+ * <pre>
+ *   免死窗口  4 + 2×Lv   6 / 8 / 10 / 12 / 14 秒
+ *   冷却    120 − 10×Lv 110 / 100 / 90 / 80 / 70 秒
+ *   耗蓝     45 + 5×Lv   50 / 55 / 60 / 65 / 70
+ *   记忆空白 13 − Lv     12 / 11 / 10 / 9 / 8 秒
+ * </pre>
+ *
+ * <p><b>为什么 CD 从 10 秒拉长</b>：它从"骚扰技"变成了"保命技"。
  * 10 秒冷却的免死等于常驻无敌。
  *
  * <p><b>⭐ 法术等级怎么传到触发时</b>：守护效果的 {@code amplifier} 存的就是
@@ -60,28 +73,52 @@ public class RecollectionSpell extends MnemosyneSpell {
     private static final ResourceLocation SPELL_ID =
             ResourceLocation.fromNamespaceAndPath(MnemosyneMod.MODID, "recollection");
 
-    /** 保命窗口时长：10 秒。 */
-    private static final int WARD_TICKS = 10 * 20;
+    /** 最大等级。四项数值数组的长度都必须等于它。 */
+    private static final int MAX_LEVEL = 5;
+
+    /** 保命窗口秒数（index = level - 1）：{@code 4 + 2×Lv} → 6/8/10/12/14。 */
+    private static final int[] WARD_SECONDS = {6, 8, 10, 12, 14};
+
+    /**
+     * 冷却秒数（index = level - 1）：{@code 120 − 10×Lv} → 110/100/90/80/70。
+     *
+     * <p>⚠️ 这些值<b>不是</b>直接塞进 {@code memoryConfig} 的 —— ISS 的
+     * {@code getSpellCooldown()} 是<b>无参</b>的（读 {@code COOLDOWN_IN_SECONDS} 配置），
+     * 拿不到等级。所以这里存的是"目标秒数"，实际改写走
+     * {@link #onCooldownAdded(SpellCooldownAddedEvent.Pre)}。
+     */
+    private static final int[] COOLDOWN_SECONDS = {110, 100, 90, 80, 70};
+
+    /**
+     * 配置里的冷却秒数 = {@code COOLDOWN_SECONDS} 的 Lv3 中点（90 秒）。
+     *
+     * <p><b>为什么必须是中点</b>：改写冷却用的是"在 ISS 算出的值上乘一个比例"，
+     * 比例 = {@code 目标秒数 / BASE_COOLDOWN_SECONDS}。取 Lv3 作基准 →
+     * Lv3 比例为 1.0（原样不动），低/高等级各自放大/缩小。
+     */
+    private static final double BASE_COOLDOWN_SECONDS = 90.0D;
+
+    /** 「记忆空白」（触发致死拦截后的<b>代价/反噬</b>）秒数：{@code 13 − Lv} → 12/11/10/9/8。 */
+    private static final int[] BLANK_SECONDS = {12, 11, 10, 9, 8};
 
     /** 触发后拉回的血量比例：50% 最大生命值。 */
     private static final float REVIVE_HEALTH_FRACTION = 0.5F;
 
-    /**
-     * 「记忆空白」（触发致死拦截后的<b>代价/反噬</b>）持续秒数（index = level - 1）：12/10/8。
-     *
-     * <p>数值来源：docs/tech/13_数值总表.md §走马灯 —— 等级越高，代价越小。
-     * ⚠️ 这是**代价**，不是守护窗口；守护窗口恒为 {@link #WARD_TICKS}（10 秒，全等级相同）。
-     */
-    private static final int[] BLANK_SECONDS = {12, 10, 8};
-
     public RecollectionSpell() {
-        // CD 90s（设计文档 v2 §一；旧值 10s 是"骚扰技"时代的，对保命技来说等于常驻无敌）
-        super(memoryConfig(SpellRarity.RARE, 90.0D, 3));
-        this.baseManaCost = 86;
-        this.manaCostPerLevel = 17;
+        // maxLevel 5（5 级制）；CD 配置值 90s 只是 Lv3 中点，真正的按等级冷却见 onCooldownAdded
+        super(memoryConfig(SpellRarity.RARE, BASE_COOLDOWN_SECONDS, MAX_LEVEL));
+        // 耗蓝 45 + 5×Lv → 50/55/60/65/70。⚠️ 旧值 86 + 17/级（→ 满级 154）是 3 级制时代的。
+        // getManaCost(level) = (base + per×(level-1)) × MANA_MULTIPLIER 配置 → 本来就是线性，无需改写。
+        this.baseManaCost = 50;
+        this.manaCostPerLevel = 5;
         this.baseSpellPower = 1;
         this.spellPowerPerLevel = 0;
         this.castTime = 0;
+    }
+
+    /** 等级 → 数组下标，越界钳到两端（效果/Curios 可能把等级抬到 maxLevel 以上）。 */
+    private static int levelIndex(final int spellLevel) {
+        return Math.max(0, Math.min(MAX_LEVEL - 1, spellLevel - 1));
     }
 
     @Override
@@ -111,7 +148,8 @@ public class RecollectionSpell extends MnemosyneSpell {
             if (ward != null) {
                 // ⚠️ 重复施放：同 amplifier 的 addEffect 只刷新时长、不叠加 —— 这正是想要的。
                 //    amplifier 存 spellLevel - 1，供触发时读回等级。
-                caster.addEffect(new MobEffectInstance(ward, WARD_TICKS, spellLevel - 1,
+                caster.addEffect(new MobEffectInstance(ward,
+                        WARD_SECONDS[levelIndex(spellLevel)] * 20, spellLevel - 1,
                         false, true, true));
             }
             SpellFeedback.actionBar(caster,
@@ -119,6 +157,40 @@ public class RecollectionSpell extends MnemosyneSpell {
             SpellFeedback.castBurst(level, caster, SpellFeedback.MEMORY_INDIGO);
         }
         super.onCast(level, spellLevel, entity, castSource, playerMagicData);
+    }
+
+    // ==================================================================
+    // 按等级冷却：ISS 没有按等级冷却的入口，只能改写冷却事件
+    // ==================================================================
+
+    /**
+     * 把冷却从"配置里的固定 90 秒"改成 {@link #COOLDOWN_SECONDS} 的按等级值。
+     *
+     * <p><b>⭐ 为什么必须走事件，不能覆写 {@code getSpellCooldown()}</b>：
+     * 实测（javap ISS 3.16.3 {@code AbstractSpell}）该方法是 <b>无参</b>的，
+     * 只读 {@code SpellConfigManager.getSpellConfigValue(this, COOLDOWN_IN_SECONDS)}，
+     * <b>拿不到等级</b>。而 {@code MagicManager.addCooldown} 在算完之后会 post
+     * {@code SpellCooldownAddedEvent$Pre}（Forge 总线），它带
+     * {@code getSpell()} / {@code getEntity()} / {@code setEffectiveCooldown(int)} —— 这是唯一干净的入口。
+     *
+     * <p><b>⭐⭐ 为什么是"乘比例"而不是"直接赋值"</b>：ISS 算出的
+     * {@code getEffectiveCooldown()} 已经套用了玩家的
+     * {@code COOLDOWN_REDUCTION} 属性与剑类施法的 {@code SWORDS_CD_MULTIPLIER}。
+     * 直接 {@code setEffectiveCooldown(秒数 × 20)} 会把这些加成<b>全部抹掉</b>，
+     * 堆冷却缩减的配装会瞬间失效。乘比例 = 保留 ISS 的全部修正，只替换等级带来的基准差异。
+     *
+     * <p><b>等级从哪来</b>：{@code AbstractSpell.getLevelFor(1, caster)}（final 方法），
+     * 它会累加 Curios 的等级加成并 post {@code ModifySpellLevelEvent}，
+     * 与 ISS 传给 {@code onCast} 的 {@code spellLevel} 是同一个口径。
+     */
+    @SubscribeEvent
+    public static void onCooldownAdded(final SpellCooldownAddedEvent.Pre event) {
+        if (!SPELL_ID.equals(event.getSpell().getSpellResource())) {
+            return;
+        }
+        final int level = event.getSpell().getLevelFor(1, event.getEntity());
+        final double ratio = COOLDOWN_SECONDS[levelIndex(level)] / BASE_COOLDOWN_SECONDS;
+        event.setEffectiveCooldown((int) Math.round(event.getEffectiveCooldown() * ratio));
     }
 
     // ==================================================================
@@ -183,9 +255,8 @@ public class RecollectionSpell extends MnemosyneSpell {
         if (blank == null) {
             return;
         }
-        final int index = Math.max(0, Math.min(BLANK_SECONDS.length - 1, spellLevel - 1));
-        player.addEffect(new MobEffectInstance(blank, BLANK_SECONDS[index] * 20, 0,
-                false, true, true));
+        player.addEffect(new MobEffectInstance(blank,
+                BLANK_SECONDS[levelIndex(spellLevel)] * 20, 0, false, true, true));
 
         // 代价之一：临时忆格全部清空（"记忆被烧掉了"）。
         // ⚠️ 只清临时格 —— 常驻格与永久格是玩家辛苦攒的，一次免死不值得把它们也清掉。
