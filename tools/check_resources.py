@@ -177,7 +177,12 @@ def registered_ids() -> set[str]:
     ids: set[str] = set()
     if not os.path.isdir(JAVA):
         return ids
-    pat = re.compile(r'\.register\(\s*"([a-z0-9_]+)"')
+    # ⚠️ 不能只认 `X.register("id"`：ModBlocks 走的是辅助方法
+    #    `registerBlock("mnemonic_bricks", ...)`（内部再注册 Block + BlockItem），
+    #    只认前一种写法会**漏掉 4 个方块和它们的 4 个方块物品**
+    #    —— 实测 registered_ids() 从 28 掉到 24，"获取途径"检查因此只审了 10/14 个物品。
+    #    所以这里放宽成 `register` + 可选后缀 + `(`，两种写法都能抓。
+    pat = re.compile(r'\bregister[A-Za-z]*\(\s*"([a-z0-9_]+)"')
     for base, _dirs, files in os.walk(JAVA):
         for f in files:
             if f.endswith(".java"):
