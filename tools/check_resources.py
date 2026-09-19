@@ -127,6 +127,8 @@ class Report:
         self.fails: list[str] = []
         self.warns: list[str] = []
         self.pendings: list[str] = []
+        # ⚠️ 字段名不能叫 `uncovered` —— 会遮蔽下面的同名方法（list 不可调用）。
+        self.uncovered_items: list[str] = []
         self.verbose = verbose
         self.checked = 0
         self._mark = 0
@@ -146,6 +148,20 @@ class Report:
     def warn(self, section: str, msg: str):
         self.warns.append(f"[{section}] {msg}")
         print(f"  ! warn {msg}")
+
+    def uncovered(self, section: str, msg: str):
+        """
+        **本该检查、但这次没检查成**的项。
+
+        ⭐⭐ 与 `warn` 的区别：`warn` 是"查过了，结果提示你一声"；
+        `uncovered` 是**根本没查** —— 它不会进 `checked`，所以检查项总数会**变少**。
+        本文件头 70~74 行写的就是"检查数量变少本身就是一种失败"：
+        2026-09-19 实测 CI 上 424 → 379（缺 ISS 解包副本，45 项音频检查凭空消失），
+        而当时只留了一条埋在 warn 明细里的提示，谁也没看见。
+        所以它必须在汇总里**单独、显眼**地列出来，不能混进 warn。
+        """
+        self.uncovered_items.append(f"[{section}] {msg}")
+        print(f"  ? 未覆盖 {msg}")
 
     def head(self, title: str):
         print(f"\n== {title}")
@@ -382,9 +398,22 @@ def check_sounds(rep: Report):
     else:
         rep.ok(f"sounds.json 全部 {len(sounds)} 个顶层键都是对象")
 
+    # ⭐⭐ 先把"本应检查多少条 ISS 音频引用"数出来 —— 这个数字**不依赖** ISS 目录是否存在。
+    # 少了它，目录缺失时就只剩一句"跳过检查"，谁也不知道到底少查了多少项。
+    iss_refs = 0
+    for entry in sounds.values():
+        if not isinstance(entry, dict):
+            continue
+        for snd in entry.get("sounds", []):
+            name = snd if isinstance(snd, str) else snd.get("name", "")
+            if name.partition(":")[0] == "irons_spellbooks":
+                iss_refs += 1
+
     root = iss_root()
     if not root:
-        rep.warn("sound", "找不到 ISS 资源目录，跳过音频存在性检查")
+        rep.uncovered("sound", f"{iss_refs} 条 ISS 音频引用的存在性**未校验**"
+                               f"（需要 ISS 解包副本，本机/本次运行没有；"
+                               f"CI 上因 .gitignore 排除 `可以参考的模组/` 而必然缺失）")
         return
     missing = 0
     total = 0
@@ -1279,6 +1308,15 @@ def main() -> int:
     check_effect_icons(rep)
     check_event_subscribers(rep)
     check_item_obtainability(rep)
+
+    if rep.uncovered_items:
+        # 必须放在汇总**之前**且独立成块：这些项没有计入 checked，
+        # 混进 warn 明细就等于"检查项悄悄变少却没人发现"。
+        print("\n" + "!" * 72)
+        print("⚠️ 本次运行未覆盖以下检查项（总数会因此变少 —— 不等于『全通过』）：")
+        for u in rep.uncovered_items:
+            print("  … " + u)
+        print("!" * 72)
 
     print("\n" + "=" * 72)
     print(f"检查项 {rep.checked} 个 · FAIL {len(rep.fails)} 条 · "
